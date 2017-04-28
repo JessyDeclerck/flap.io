@@ -7,8 +7,6 @@ var depart = false;
 // Création de la vue de départ 
 var splashState = {
     preload: function() { 
-        // This function will be executed at the beginning     
-        // That's where we load the images and sounds 
         game.load.image('fond', 'fond.png'); 
         game.load.image('bouton_1', 'bouton_1.png');
     },
