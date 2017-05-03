@@ -1,5 +1,6 @@
-var game = new  Phaser.game(400, 490, Phaser.CANVAS);
+var game = new Phaser.Game(400, 490, Phaser.CANVAS);
 
+//'nom de l'état', json à charger
 game.state.add('boot', bootState);
 game.state.add('load', loadState);
 game.state.add('menu', menuState);
