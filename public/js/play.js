@@ -15,9 +15,9 @@ var playState = {
         game.stage.backgroundColor = '#2DB2FF';
         // Initialisation de la physique du jeu et du sprite
         game.physics.startSystem(Phaser.Physics.ARCADE); 
-        var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
+        //var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
         this.bird = game.add.sprite(100, 245, 'bird');
-        this.otherBird =  game.add.sprite(-100,-100,'bird');
+        this.otherBird =  game.add.sprite(-100,-100,'bird_2');
         game.physics.arcade.enable(this.bird);
         this.bird.body.gravity.y = 1000;
         // Gestion des touches du clavier
@@ -25,11 +25,11 @@ var playState = {
         spaceKey.onDown.add(this.jump, this);
         var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
         escKey.onDown.add(this.leave, this);
-
+        socket.emit('start_game');
     },
     
 
-    addOnePipe: function(x, y) {
+    addOnePipe: function(x, y, socket) {
         this.pipe = game.add.sprite(x, y, 'pipe');
         this.pipes.add(this.pipe);
         game.physics.arcade.enable(this.pipe);
@@ -39,14 +39,23 @@ var playState = {
     },
         // Fonction fabrication des obstacles verticaux
     addRowOfPipes: function() {
-        var hole = Math.floor(Math.random() * 5) + 1;
-        for (var i = 0; i < 8; i++)
+        //socket.emit('giveMeNewPipes');
+         
+        //var hole = Math.floor(Math.random() * 5) + 1;
+        // Quand apparition d'une colonne, le score augmente de 1
+          
+    },
+
+    addRowPipes_1: function(hole){   
+        console.log(hole);
+        //this.labelScore.text = this.score++;
+            for (var i = 0; i < 8; i++)
             if (i != hole && i != hole + 1) 
                 this.addOnePipe(400, i * 60 + 10);  
-        // Quand apparition d'une colonne, le score augmente de 1
-        this.labelScore.text = this.score++;  
+        
     },
-        jump: function() {
+    
+    jump: function() {
     // Puissance de la vélocité
         this.bird.body.velocity.y = -315;
     },
@@ -78,3 +87,8 @@ var playState = {
            game.state.start('play');
     },
 };
+
+socket.on('newPipes', function(hole){
+    console.log(hole);
+    playState.addRowPipes_1(hole);
+});
