@@ -11,8 +11,6 @@ var loadState = {
             temp= CheminComplet.substring(8, CheminComplet.length);
             ip = temp.substring(0, temp.indexOf('/'));
         }
-        //alert ('NomDuFichier : \n'+NomDuFichier+ ' \n\n CheminRepertoire : \n' +CheminRepertoire+ ' \n\n CheminComplet :
-        console.log(CheminComplet);
         // connection a la socket du serveur
         socket = io.connect(ip);
         var assets = "assets/";
