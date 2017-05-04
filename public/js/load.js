@@ -1,8 +1,9 @@
+socket = io.connect('localhost:8095');
 var loadState = {
 
     preload: function(){
         // connection a la socket du serveur
-        socket = io.connect('172.27.93.73:8095');
+        
         var assets = "assets/";
         game.load.image('bird', assets+'bird.png');
         game.load.image('pipe', assets+'pipe.png');
