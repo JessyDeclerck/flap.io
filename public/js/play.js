@@ -84,7 +84,8 @@ var playState = {
 
     // Fonction restart
         restartGame: function() {
-           game.state.start('play');
+            socket.emit('stop_game');
+           game.state.start('win');
     },
 };
 
