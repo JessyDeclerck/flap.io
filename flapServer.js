@@ -23,6 +23,10 @@ io.sockets.on('connection', function (socket) {
         io.sockets.emit('updateNbPlayer', io.engine.clientsCount);
     });
 
+    socket.on('playerBird', function(birdPosition){
+        socket.broadcast.emit('updateDisplayedBirds', birdPosition);
+    });
+
 });
 
 httpServer.listen(8095);

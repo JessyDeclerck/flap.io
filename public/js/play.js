@@ -1,6 +1,7 @@
 
 var playState = {
         bird : null,
+        otherBird : null,
         pipes : null,
         score : 0,
         labelScore : null,
@@ -16,6 +17,7 @@ var playState = {
         game.physics.startSystem(Phaser.Physics.ARCADE); 
         var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
         this.bird = game.add.sprite(100, 245, 'bird');
+        this.otherBird =  game.add.sprite(-100,-100,'bird');
         game.physics.arcade.enable(this.bird);
         this.bird.body.gravity.y = 1000;
         // Gestion des touches du clavier
@@ -23,7 +25,7 @@ var playState = {
         spaceKey.onDown.add(this.jump, this);
         var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
         escKey.onDown.add(this.leave, this);
-        
+
     },
     
 
@@ -49,6 +51,16 @@ var playState = {
         this.bird.body.velocity.y = -315;
     },
         update: function() {
+           var birdToUpdate = this.otherBird;
+        //envoi des informations concernant le personnage du joueur au server
+        socket.on('updateDisplayedBirds', function(otherBirdPosition){
+            birdToUpdate.x = otherBirdPosition.x;
+            birdToUpdate.y = otherBirdPosition.y;
+        });
+        var birdPosition = { x : null, y : null};
+        birdPosition.x = this.bird.x;
+        birdPosition.y = this.bird.y;
+        socket.emit('playerBird', birdPosition);
         // Conditions de game over   
         if (this.bird.y < 0 || this.bird.y > 490)
             this.restartGame();
