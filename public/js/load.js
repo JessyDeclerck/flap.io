@@ -1,8 +1,20 @@
 var loadState = {
 
     preload: function(){
+        var CheminComplet = document.location.href;
+        var ip;
+        if (CheminComplet.includes("http://")){
+            temp= CheminComplet.substring(7, CheminComplet.length);
+            ip = temp.substring(0, temp.indexOf('/'));
+        }
+        else if (CheminComplet.includes("https://")){
+            temp= CheminComplet.substring(8, CheminComplet.length);
+            ip = temp.substring(0, temp.indexOf('/'));
+        }
+        //alert ('NomDuFichier : \n'+NomDuFichier+ ' \n\n CheminRepertoire : \n' +CheminRepertoire+ ' \n\n CheminComplet :
+        console.log(CheminComplet);
         // connection a la socket du serveur
-        socket = io.connect('172.27.93.73:8095');
+        socket = io.connect(ip);
         var assets = "assets/";
         game.load.image('bird', assets+'bird.png');
         game.load.image('pipe', assets+'pipe.png');
@@ -12,6 +24,7 @@ var loadState = {
         var loadingLabel = game.add.text("loading...");
 
     },
+    
 
     create: function(){
         game.state.start('menu');
