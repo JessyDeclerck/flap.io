@@ -1,148 +1,139 @@
 
 var playState = {
-        bird : null,
-        pipes : null,
-        birds : null,
-        score : 0,
-        labelScore : null,
-        preload : function() {
-            this.pipes = game.add.group();
-            this.birds = new Map();
-        },
-        create: function() {
+    idPlayer: null,
+    bird: null,
+    pipes: null,
+    birds: null,
+    score: 0,
+    labelScore: null,
+    gameStarted: false,
+    preload: function () {
+        this.pipes = game.add.group();
+        this.birds = new Map();
+    },
+    create: function () {
         this.score = 0;
-        this.labelScore = game.add.text(20, 20, "0", 
-                                        { font: "30px Arial", fill: "#ffffff" });        
+        this.labelScore = game.add.text(20, 20, "0",
+            { font: "30px Arial", fill: "#ffffff" });
         game.stage.backgroundColor = '#2DB2FF';
         // Initialisation de la physique du jeu et du sprite
-        game.physics.startSystem(Phaser.Physics.ARCADE); 
+        game.physics.startSystem(Phaser.Physics.ARCADE);
         var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
-        this.bird = game.add.sprite(100, 245, 'bird');
-        game.physics.arcade.enable(this.bird);
-        this.bird.body.gravity.y = 1000;
         // Gestion des touches du clavier
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
         var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
         escKey.onDown.add(this.leave, this);
         console.log('gameStarted');
+        this.gameStarted = true;
         socket.emit('gameStarted');
-
+        this.idPlayer = socket.id;
+        socket.emit('getExistingPlayers');
     },
-    addOneBird: function(player){
-        if(this.birds.get(player.id) == null){
-        var newBird = game.add.sprite(player.bird.x, player.bird.y, 'bird');
-        
-            this.birds.set(player.id, newBird);
-        }
+    addOneBird: function (player) {
+        //on vérifie que le joueur n'est pas déjà dans la map avant d'ajouter
+        var birdPlayer = player.bird;
+        var newBird;
+        //si nouveau joueur, la position de l'oiseau est null
+        if (birdPlayer.x != null)
+            newBird = game.add.sprite(player.bird.x, player.bird.y, 'bird'); //on affiche le joueur à sa position actuelle
+        else
+            newBird = game.add.sprite(90, 200, 'bird');
+        this.birds.set(player.id, newBird);
+        //on verifie si l'oiseau est celui contrôlé par le joueur
+        //init physics of bird
+        game.physics.arcade.enable(newBird);
+        newBird.body.gravity.y = 1000;
+        if (player.id = this.idPlayer)
+            this.bird = this.birds.get(this.idPlayer);
     },
-    addOnePipe: function(x, y) {
+    addOnePipe: function (x, y) {
         this.pipe = game.add.sprite(x, y, 'pipe');
         this.pipes.add(this.pipe);
         game.physics.arcade.enable(this.pipe);
-        this.pipe.body.velocity.x = -200; 
+        this.pipe.body.velocity.x = -200;
         this.pipe.checkWorldBounds = true;
         this.pipe.outOfBoundsKill = true;
     },
-        // Fonction fabrication des obstacles verticaux
-    addRowOfPipes: function() {
+    // Fonction fabrication des obstacles verticaux
+    addRowOfPipes: function () {
         var hole = Math.floor(Math.random() * 5) + 1;
         for (var i = 0; i < 8; i++)
-            if (i != hole && i != hole + 1) 
-                this.addOnePipe(400, i * 60 + 10);  
+            if (i != hole && i != hole + 1)
+                this.addOnePipe(400, i * 60 + 10);
         // Quand apparition d'une colonne, le score augmente de 1
-        this.labelScore.text = this.score++;  
+        this.labelScore.text = this.score++;
     },
-        jump: function() {
-    // Puissance de la vélocité
-        this.bird.body.velocity.y = -315;
+    jump: function () {
+        // Puissance de la vélocité
+        if (this.bird.alive) {
+            this.bird.body.velocity.y = -315;
+            socket.emit('jump');
+        }
     },
-        update: function() {
-        //envoi des informations concernant le personnage du joueur au server
-        var birdPosition = { x : null, y : null};
-        birdPosition.x = this.bird.x;
-        birdPosition.y = this.bird.y;
-        socket.emit('playerBird', birdPosition);
-        // Conditions de game over   
-        if (this.bird.y < 0 || this.bird.y > 490)
-            this.destroyMe();
-        game.physics.arcade.overlap(this.bird, this.pipes, this.destroyMe, null, this);
+    update: function () {
+        if (this.bird != null) {
+            //envoi des informations concernant le personnage du joueur au server
+            var birdPosition = { x: null, y: null };
+            birdPosition.x = this.bird.x;
+            birdPosition.y = this.bird.y;
+            if (this.bird.alive)
+                socket.emit('sendBirdPosition', birdPosition);
+            // Conditions de game over
+            game.physics.arcade.overlap(this.bird, this.pipes, this.destroyMe, null, this);
+            if ((this.bird.y < 0 || this.bird.y > 490) && this.bird.alive)
+                this.destroyMe();
+        }
     },
-    destroyMe : function(){
-        console.log("demande d'autodestruction");
+    destroyMe: function () {
         socket.emit('destroyMe');
     },
 
     // Fonction retour au menu
-        leave: function(){
-         socket.emit('returnToMenu');
-         this.destroyMe();
-         game.physics.arcade.overlap(this.bird, this.pipes, this.destroyMe, null, this);
-         game.state.start('menu');
+    leave: function () {
+
+        if (this.bird.alive)
+            this.destroyMe();
+        this.gameStarted = false;
+        socket.emit('returnToMenu');
+        game.state.start('menu');
     },
 
     // Fonction restart
-        restartGame: function() {
-           game.state.start('play');
+    restartGame: function () {
+        game.state.start('play');
     },
+    makePlayerJump: function (idPlayer) {
+        this.birds.get(idPlayer).body.velocity.y = -315;
+    }
 };
+
 //ordres serveurs
+socket.on('addBirdPlayer', function (player) {
+    if (playState.gameStarted)
+        playState.addOneBird(player);
+});
 
-    socket.on('addBirdPlayer', function(clients){
-        var mapPlayers = new Map(clients);
-        //on se retire de la map
-        var mySelf = mapPlayers.get(socket.id);
-
-        if(mySelf.inGame){
-            mapPlayers.delete(socket.id);
-
-            mapPlayers.forEach(function(player){
-                //vérifier si joueur mort
-                console.log(player);
-                if(player.isAlive){
-                    playState.addOneBird(player);
-                    console.log("ajout d'un oiseau");
-                }
-            });
-        }
+//décaler vers JSON
+socket.on('addExistingPlayers', function (players) {
+    var mapPlayers = new Map(players);
+    mapPlayers.forEach(function (player) {
+        if (player.isAlive)
+            playState.addOneBird(player);
     });
-    socket.on('updateDisplayedBirds', function(clients){
-        if(playState.birds != null){
-            var mapPlayers = new Map(clients);
-            var mySelf = mapPlayers.get(socket.id);
-            if(mySelf.inGame){
-                mapPlayers.delete(socket.id);
-                mapPlayers.forEach(function(player) {
-                    if(player.inGame){
-                        birdToUpdate = playState.birds.get(player.id);
-                        if(birdToUpdate != null){
-                            playState.birds.get(player.id).x = player.bird.x;
-                            playState.birds.get(player.id).y = player.bird.y;
-                        }
-                    }
-                });
-            }
-        }
-    });
+});
 
-    socket.on('destroyBird', function(idPlayer){
-        console.log("tentative de destruction");
-        if(playState.bird != null){
-            if(playState.birds != null){
-                var playerToDestroy = playState.birds.get(idPlayer);
-                if(playerToDestroy != null){
-                    playerToDestroy.destroy();
-                    playState.birds.delete(idPlayer);
-                    console.log("suppression d'un oiseau");
-                }
-            }
-            if(socket.id == idPlayer){
-                console.log("autodestruction");
-                playState.bird.destroy();
-                playState.bird.x = 0;
-                playState.bird.y = 0;
-                playState.birds.delete(idPlayer);
+//décaler vers JSON
+socket.on('destroyBird', function (idPlayer) {
+    if (playState.gameStarted) {
+        var birdPlayerToDestroy = playState.birds.get(idPlayer);
+        if (birdPlayerToDestroy != null) {
+            birdPlayerToDestroy.kill();
         }
-        }
+    }
+});
 
-    });
+socket.on('aPlayerJumped', function (idPlayer) {
+    if (playState.gameStarted)
+        playState.makePlayerJump(idPlayer);
+});

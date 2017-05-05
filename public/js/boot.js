@@ -1,9 +1,9 @@
 //on définie l'état bootState
 var bootState = {
 
-    create: function(){
+    create: function () {
 
-        game.physics.startSystem(Phaser.Physics.ARCADE); 
+        game.physics.startSystem(Phaser.Physics.ARCADE);
         game.stage.disableVisibilityChange = true;
         game.state.start('load');
 
