@@ -27,17 +27,22 @@ var winState = {
         socket.emit('autre_joueur');
 
     },
+
+    // Fonction recuperation du score et affichage
     ton_score : function(valeur){
         this.score.setText("Your score : " + valeur);
     },
 
+    // Fonction recuperation du status de l'autre joueur
     status_autre_joueur: function(enjeu){
         this.status.setText(enjeu);
     },
 
+    // Affichage du compte à rebour avant le retour à l'écran menu
     restart: function (){
         compteRebour = this.compteRebour;
         compteur = this.compteur;
+        // Set du timer 
         time_1 = setInterval(function(){
                         compteur -= 1;
                         compteRebour.setText("Restart in " + compteur + " second(s)");
@@ -45,11 +50,11 @@ var winState = {
                             clearInterval(time_1);
                             game.state.start('menu');
                         }
-                    }, 1500)
-
+                        }, 1500)
     },
 };
 
+// Interception de l'etat de l'autre joueur et affichage
 socket.on('autre_joueur_status', function(statut){
             console.log("statut enjeu : " + statut.enjeu);
             if (statut.enjeu == true){
@@ -62,10 +67,13 @@ socket.on('autre_joueur_status', function(statut){
             winState.status_autre_joueur(enjeu);
                 
 });
+
+// Interception du message du score du joueur
 socket.on('ton_score', function(valeur){
                 winState.ton_score(valeur); 
 });
 
+// Insterception du message de restart
 socket.on('restart', function(){
                 winState.restart(); 
 });

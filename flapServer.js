@@ -7,6 +7,7 @@ var start = false;
 var time = null;
 var joueurs = [];
 var player = {};
+var NOMBRE_JOUEUR_PAR_PARTIE = 2;
 player.id = null;
 player.score = 0;
 player.enjeu = false;
@@ -17,33 +18,28 @@ app.use(express.static('public'));
 // Chargement de socket.io
 var io = require('socket.io').listen(httpServer);
 
-
+// Fonction calcul des pipes 
 function myFunc(){
     hole = Math.floor(Math.random() * 5) + 1;
     console.log(hole);
     io.sockets.emit('newPipes', hole);
 }
 
+// Initialisation de la socket
 io.sockets.on('connection', function (socket) {
 
+    // Connection d'un client
     socket.on('newPlayer', function () {
         nouveau = true;
-        //if (joueurs.length != 0){
-            //console.log('for' + joueurs.length);
-
+        // Test si socket du client est déja dans la liste des joueurs
         for (var i =0; i<(joueurs.length); i++){
-            //console.log('joueur present : ' + joueurs[i] +" -> joueur nouveau : " + socket.id);
             if(joueurs[i].id == socket.id){
-                //console.log("effectivement  nouveau joueur");
                 nouveau = false;
             }
         }
-        //}
-        //console.log("nouveau : " + nouveau);
+        // Si nouveau on ajoute
         if (nouveau == true && joueurs.length< 3){
             console.log("nouveau joueur");
-            //console.log("les joueurs avant ajout: " + joueurs);
-                //console.log("un joueur a rejoint le jeu");
                 var player = {}
                 player.id = socket.id;
                 player.score = 0;
@@ -52,39 +48,33 @@ io.sockets.on('connection', function (socket) {
                 for (var i =0; i<(joueurs.length); i++){
                     console.log("joueur " + i + ":"+ joueurs[i].id);
                 }
-                //console.log("les joueurs après ajout: " + joueurs);
-            
         } 
         io.sockets.emit('updateNbPlayer', joueurs.length);
     });
 
+    // Si deconnection d'un client
      socket.on('disconnect', function () {
          console.log("un joueur s'est déconnecté")
-         //console.log("les joueurs avant suppression : " + joueurs);
-         for (var i =0; i<(joueurs.length); i++){
-            //console.log (joueurs[i].id + "-> socket:" + socket.id); 
+         for (var i =0; i<(joueurs.length); i++){ 
         }
          for (var i =0; i<(joueurs.length); i++){
              if(joueurs[i].id == socket.id){
                  joueurs.splice(i, i+1);
              }
         io.sockets.emit('updateNbPlayer', joueurs.length);
-        //console.log("les joueurs aprés suppression: " + joueurs);
          }
-        
     });
 
-    // demande d'un joueur si possible de commencer partie
+    // Demande d'un joueur si possible de commencer partie
     socket.on('possible_game',function(){
-        console.log("demande de commencement");
-        if (joueurs.length < 2){
-            socket.emit('jouer', 'non'); // emission nok pour le joueur demandeur
+        if (joueurs.length < NOMBRE_JOUEUR_PAR_PARTIE){
+            socket.emit('jouer', 'non'); // Emission nok pour le joueur demandeur
         }
         else{
-            io.sockets.emit('jouer', 'oui'); //emission ok pour tous les joueurs
+            io.sockets.emit('jouer', 'oui'); // Emission ok pour tous les joueurs
         }
-        
     });
+
 
     socket.on('autre_joueur',function(){
         console.log("reception autre joueur");
@@ -97,6 +87,7 @@ io.sockets.on('connection', function (socket) {
             }
     });
 
+    // Stockage du score du joueur
     socket.on('score', function (valeur) {
         for (var i =0; i<(joueurs.length); i++){
              if(joueurs[i].id == socket.id){
@@ -110,6 +101,7 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
+    // Envoi du score au joueur
     socket.on('mon_score', function () {
         for (var i =0; i<(joueurs.length); i++){
              if(joueurs[i].id == socket.id){
@@ -117,10 +109,9 @@ io.sockets.on('connection', function (socket) {
                 socket.emit('ton_score', joueurs[i].score);
              }
         }
-        
     });
 
-     // message envoyé des joueurs lors du commencement du jeu (play.js)
+     // Message envoyé aux joueurs lors du commencement du jeu (play.js)
     socket.on('start_game', function (){
         console.log('start_game');
         if (start == false){
@@ -133,9 +124,9 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
+    // Detection de la fin d'une partie d'un joueur
     socket.on('stop_game', function(){
         console.log("stop game");
-        
         for (var i =0; i<(joueurs.length); i++){
             //console.log('joueur i: ' + joueurs[i].id + " socket id: " + socket.id);
              if(joueurs[i].id == socket.id){
@@ -144,12 +135,13 @@ io.sockets.on('connection', function (socket) {
         }
         en_jeu = false;
         for (var i =0; i<(joueurs.length); i++){   
-            //console.log('joueur en jeu : ' + joueurs[i].enjeu);
                     if (joueurs[i].enjeu != false){
                             en_jeu = true;
                     }
         }
-        if (en_jeu == false){
+        // Si plus de joueurs en jeu, arret de l'envoi des pipes et envoi 
+        // du message de restart au joueurs
+        if (en_jeu == false) {
             clearInterval(time_);
             start= false;
             io.sockets.emit('restart');
@@ -159,8 +151,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('playerBird', function(birdPosition){
         socket.broadcast.emit('updateDisplayedBirds', birdPosition);
-    });
-    
+    });    
 });
 
 httpServer.listen(8095);
