@@ -38,17 +38,9 @@ var playState = {
         this.pipe.outOfBoundsKill = true;
     },
         // Fonction fabrication des obstacles verticaux
-    addRowOfPipes: function() {
-        //socket.emit('giveMeNewPipes');
-         
-        //var hole = Math.floor(Math.random() * 5) + 1;
-        // Quand apparition d'une colonne, le score augmente de 1
-          
-    },
-
     addRowPipes_1: function(hole){   
         console.log(hole);
-        //this.labelScore.text = this.score++;
+            this.labelScore.text = this.score++;
             for (var i = 0; i < 8; i++)
             if (i != hole && i != hole + 1) 
                 this.addOnePipe(400, i * 60 + 10);  
@@ -84,6 +76,8 @@ var playState = {
 
     // Fonction restart
         restartGame: function() {
+            console.log('emmision du score:' + this.score);
+            socket.emit('score', this.score);
             socket.emit('stop_game');
            game.state.start('win');
     },
