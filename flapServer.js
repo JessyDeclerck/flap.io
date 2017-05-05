@@ -75,13 +75,11 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
-
+    // Interception de la demande d'envoi de l'adversaire
     socket.on('autre_joueur',function(){
-        console.log("reception autre joueur");
         for (var i =0; i<(joueurs.length); i++){
-                //console.log (joueurs[i].id + " : " +socket.id);
                 if(joueurs[i].id != socket.id){
-                    console.log("emission autrejoueurstatut");
+                    // envoi de l'objet joueur
                     socket.emit('autre_joueur_status', joueurs[i]);
                 }
             }
@@ -118,7 +116,6 @@ io.sockets.on('connection', function (socket) {
             for (var i =0; i<(joueurs.length); i++){
                 joueurs[i].enjeu = true;
             }
-            //console.log("debut du jeu");
             time_ = setInterval(myFunc, 1500);
             start = true;   
         }
