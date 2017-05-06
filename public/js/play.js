@@ -18,7 +18,7 @@ var playState = {
         game.stage.backgroundColor = '#2DB2FF';
         // Initialisation de la physique du jeu et du sprite
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
+       // var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
         // Gestion des touches du clavier
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
@@ -56,13 +56,13 @@ var playState = {
         this.pipe.outOfBoundsKill = true;
     },
     // Fonction fabrication des obstacles verticaux
-    addRowOfPipes: function () {
-        var hole = Math.floor(Math.random() * 5) + 1;
+    addRowOfPipes: function (hole) {
         for (var i = 0; i < 8; i++)
             if (i != hole && i != hole + 1)
                 this.addOnePipe(400, i * 60 + 10);
         // Quand apparition d'une colonne, le score augmente de 1
-        this.labelScore.text = this.score++;
+        if(this.bird.alive)
+            this.labelScore.text = this.score++;
     },
     jump: function () {
         // Puissance de la vélocité
@@ -136,4 +136,9 @@ socket.on('destroyBird', function (idPlayer) {
 socket.on('aPlayerJumped', function (idPlayer) {
     if (playState.gameStarted)
         playState.makePlayerJump(idPlayer);
+});
+
+socket.on('newHole', function(hole){
+    if(playState.gameStarted)
+        playState.addRowOfPipes(hole);
 });

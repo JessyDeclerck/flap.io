@@ -12,6 +12,23 @@ app.use(express.static('public'));
 var io = require('socket.io').listen(httpServer);
 var clients = new Map();
 
+function generateHole(){
+    hole = Math.floor(Math.random() * 5) + 1;
+    io.sockets.emit('newHole', hole);
+}
+
+
+//cette fonction n'est activable qu'une seule fois
+var sendHoles = (function() {
+    var executed = false;
+    return function () {
+        if (!executed) {
+            executed = true;
+            setInterval(generateHole, 1500);
+        }
+    };
+})();
+
 io.sockets.on('connection', function (socket) {
     var client = {
         id: socket.id,
@@ -50,6 +67,8 @@ io.sockets.on('connection', function (socket) {
         newPlayer.isAlive = true;
         //envoyer seulement le nouveau client
         io.sockets.emit('addBirdPlayer', newPlayer);
+        sendHoles();
+        
     });
     socket.on('getExistingPlayers', function () {
         //on copie la map pour ne pas modifier l'originale

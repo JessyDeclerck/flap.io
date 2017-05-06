@@ -1,4 +1,4 @@
-socket = io.connect('192.168.1.23:8095');
+socket = io.connect('localhost:8095');
 var loadState = {
 
     preload: function () {
