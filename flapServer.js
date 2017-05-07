@@ -41,7 +41,7 @@ var startTimer = function(toExecute) {
         }
 };
 
-var timeLeft = 6;
+var timeLeft = 11;
 var noticeGameStartingSoon = function(){
     timeLeft--;
     console.log("time before the launch of the game : " + timeLeft);
@@ -50,9 +50,9 @@ var noticeGameStartingSoon = function(){
     else{
         console.log("commencement des parties");
         io.sockets.emit('startTheGame');
+        console.log("signal envoyé");
         clearInterval(timer);
-        timeLeft = 6;
-        //clear interval
+        timeLeft = 11;
     }
 };
 
@@ -71,20 +71,26 @@ io.sockets.on('connection', function (socket) {
         nbPlayer = io.engine.clientsCount;
         console.log("un joueur a rejoint le jeu")
         io.sockets.emit('updateNbPlayer', nbPlayer);
-
+        //voir comportement si rejoint pendant jeu en cours
         if(nbPlayer > 1 && !gameStarted)
             startTimer(gameStarted);//l'état de gameStarted détermine si le timer doit être lancé ou non
         
 
     });
 
+    socket.on('updateScore', function(score){
+        console.log("updating score : "+socket.id+ "  " +score);
+        clients.get(socket.id).score = score;
+    });
+
     socket.on('disconnect', function () {
         nbPlayer = io.engine.clientsCount;
         console.log("un joueur s'est déconnecté")
+        
         clients.delete(socket.id);
+        
         io.sockets.emit('updateNbPlayer', nbPlayer);
         io.sockets.emit('destroyBird', socket.id);
-        //envoyer message pour delete oiseau
     });
 
     socket.on('jump', function () {
@@ -95,14 +101,17 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('sendBirdPosition', function (birdPosition) {
         var player = clients.get(socket.id);
-        player.bird = birdPosition;
+        if(player != null)
+            player.bird = birdPosition;
 
     });
     socket.on('gameStarted', function () {
         console.log("game started")
         var newPlayer = clients.get(socket.id);
-        newPlayer.inGame = true;
-        newPlayer.isAlive = true;
+        if(newPlayer != null){
+            newPlayer.inGame = true;
+            newPlayer.isAlive = true;
+        }
         //envoyer seulement le nouveau client
         io.sockets.emit('addBirdPlayer', newPlayer);
         sendHoles();
@@ -119,25 +128,14 @@ io.sockets.on('connection', function (socket) {
         });
         socket.emit('addExistingPlayers', Array.from(existingPlayers));
     });
-    socket.on('destroyMe', function (score) {
+    socket.on('destroyMe', function () {
         console.log("demande d'autodestruction");
         var clientToUpdate = clients.get(socket.id);
         clientToUpdate.isAlive = false;
-        clientToUpdate.score = score;
         io.sockets.emit('destroyBird', socket.id);
         isGameOver();
     });
 
-    var getExistingPlayers = function(){
-         var existingPlayers = new Map(clients);
-        //on se retire de la map
-        existingPlayers.delete(socket.id);
-        existingPlayers.forEach(function (player, key, map) {
-            if (!player.inGame)
-                map.delete(player);
-        });
-        return existingPlayers;
-    }
 
     var isGameOver = function(){
         var nbPlayersAlive = 0;
@@ -148,7 +146,8 @@ io.sockets.on('connection', function (socket) {
         if(nbPlayersAlive < 2){
             gameStarted = false; //envoyer signal fin de jeu -> tableau des scores
             console.log("partie terminée");
-            //io.sockets.emit('')
+            io.sockets.emit('gameOver', Array.from(clients));
+            clients = new Map();
         }
     };
 

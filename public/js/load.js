@@ -1,4 +1,4 @@
-socket = io.connect('localhost:8095');
+socket = io.connect(ip());
 var loadState = {
 
     preload: function () {
@@ -19,3 +19,16 @@ var loadState = {
     }
 
 };
+
+function ip(){
+    var CheminComplet = document.location.href;
+        var ip;
+        if (CheminComplet.includes("http://")){
+            temp= CheminComplet.substring(7, CheminComplet.length);
+            return ip = temp.substring(0, temp.indexOf('/'));
+        }
+        else if (CheminComplet.includes("https://")){
+            temp= CheminComplet.substring(8, CheminComplet.length);
+            return ip = temp.substring(0, temp.indexOf('/'));
+        }
+}

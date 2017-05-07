@@ -22,6 +22,7 @@ var playState = {
         // Gestion des touches du clavier
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
+        game.input.onDown.add(this.jump, this); // pointer will contain the pointer that activated this event}
         var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
         escKey.onDown.add(this.leave, this);
         console.log('gameStarted');
@@ -39,13 +40,18 @@ var playState = {
             newBird = game.add.sprite(player.bird.x, player.bird.y, 'bird'); //on affiche le joueur à sa position actuelle
         else
             newBird = game.add.sprite(90, 200, 'bird');
+
+        
         this.birds.set(player.id, newBird);
         //on verifie si l'oiseau est celui contrôlé par le joueur
         //init physics of bird
+        
         game.physics.arcade.enable(newBird);
         newBird.body.gravity.y = 1000;
-        if (player.id = this.idPlayer)
+        if (player.id == this.idPlayer)
             this.bird = this.birds.get(this.idPlayer);
+        else
+            newBird.alpha = 0.5;
     },
     addOnePipe: function (x, y) {
         this.pipe = game.add.sprite(x, y, 'pipe');
@@ -61,8 +67,11 @@ var playState = {
             if (i != hole && i != hole + 1)
                 this.addOnePipe(400, i * 60 + 10);
         // Quand apparition d'une colonne, le score augmente de 1
-        if(this.bird.alive)
+        if(this.bird.alive){
+            socket.emit('updateScore', this.score);
             this.labelScore.text = this.score++;
+           
+        }
     },
     jump: function () {
         // Puissance de la vélocité
@@ -105,9 +114,14 @@ var playState = {
     },
     makePlayerJump: function (player) {
         //correction position joueur
+        console.log("updating position");
         this.birds.get(player.id).x = player.bird.x;
         this.birds.get(player.id).y = player.bird.y;
         this.birds.get(player.id).body.velocity.y = -315;
+    },
+    gameOver : function(){
+        this.gameStarted = false;
+        game.state.start('win');
     }
 };
 
@@ -144,4 +158,9 @@ socket.on('aPlayerJumped', function (player) {
 socket.on('newHole', function(hole){
     if(playState.gameStarted)
         playState.addRowOfPipes(hole);
+});
+
+socket.on('gameOver', function(players){
+    winState.setPlayers(players);
+    playState.gameOver();
 });
