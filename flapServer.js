@@ -29,6 +29,7 @@ var sendHoles = (function() {
         }
     };
 })();
+
 var timer = null;
 var gameStarted = false;
 var startTimer = function(toExecute) {
@@ -55,12 +56,14 @@ var noticeGameStartingSoon = function(){
     }
 };
 
+
 io.sockets.on('connection', function (socket) {
     var client = {
         id: socket.id,
         inGame: false,
         bird: { x: null, y: null },
-        isAlive: false
+        isAlive: false,
+        score : 0
     };
     clients.set(client.id, client);
 
@@ -70,7 +73,7 @@ io.sockets.on('connection', function (socket) {
         io.sockets.emit('updateNbPlayer', nbPlayer);
 
         if(nbPlayer > 1 && !gameStarted)
-            startTimer(gameStarted);
+            startTimer(gameStarted);//l'état de gameStarted détermine si le timer doit être lancé ou non
         
 
     });
@@ -85,7 +88,9 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('jump', function () {
-        socket.broadcast.emit('aPlayerJumped', socket.id);
+        //corriger position joueur
+        var playerToUpdate =  clients.get(socket.id);
+        socket.broadcast.emit('aPlayerJumped', playerToUpdate);
     });
 
     socket.on('sendBirdPosition', function (birdPosition) {
@@ -114,12 +119,25 @@ io.sockets.on('connection', function (socket) {
         });
         socket.emit('addExistingPlayers', Array.from(existingPlayers));
     });
-    socket.on('destroyMe', function () {
+    socket.on('destroyMe', function (score) {
         console.log("demande d'autodestruction");
-        clients.get(socket.id).isAlive = false;
+        var clientToUpdate = clients.get(socket.id);
+        clientToUpdate.isAlive = false;
+        clientToUpdate.score = score;
         io.sockets.emit('destroyBird', socket.id);
         isGameOver();
     });
+
+    var getExistingPlayers = function(){
+         var existingPlayers = new Map(clients);
+        //on se retire de la map
+        existingPlayers.delete(socket.id);
+        existingPlayers.forEach(function (player, key, map) {
+            if (!player.inGame)
+                map.delete(player);
+        });
+        return existingPlayers;
+    }
 
     var isGameOver = function(){
         var nbPlayersAlive = 0;
@@ -130,6 +148,7 @@ io.sockets.on('connection', function (socket) {
         if(nbPlayersAlive < 2){
             gameStarted = false; //envoyer signal fin de jeu -> tableau des scores
             console.log("partie terminée");
+            //io.sockets.emit('')
         }
     };
 

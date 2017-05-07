@@ -93,7 +93,7 @@ var playState = {
     leave: function () {
 
         if (this.bird.alive)
-            this.destroyMe();
+            this.destroyMe(this.score);
         this.gameStarted = false;
         socket.emit('returnToMenu');
         game.state.start('menu');
@@ -103,8 +103,11 @@ var playState = {
     restartGame: function () {
         game.state.start('play');
     },
-    makePlayerJump: function (idPlayer) {
-        this.birds.get(idPlayer).body.velocity.y = -315;
+    makePlayerJump: function (player) {
+        //correction position joueur
+        this.birds.get(player.id).x = player.bird.x;
+        this.birds.get(player.id).y = player.bird.y;
+        this.birds.get(player.id).body.velocity.y = -315;
     }
 };
 
@@ -133,9 +136,9 @@ socket.on('destroyBird', function (idPlayer) {
     }
 });
 
-socket.on('aPlayerJumped', function (idPlayer) {
+socket.on('aPlayerJumped', function (player) {
     if (playState.gameStarted)
-        playState.makePlayerJump(idPlayer);
+        playState.makePlayerJump(player);
 });
 
 socket.on('newHole', function(hole){
