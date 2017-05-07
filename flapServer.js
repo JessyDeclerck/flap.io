@@ -13,14 +13,14 @@ var io = require('socket.io').listen(httpServer);
 var clients = new Map();
 var nbPlayer;
 
-function generateHole(){
+function generateHole() {
     hole = Math.floor(Math.random() * 5) + 1;
     io.sockets.emit('newHole', hole);
 }
 
 
 //cette fonction n'est activable qu'une seule fois
-var sendHoles = (function() {
+var sendHoles = (function () {
     var executed = false;
     return function () {
         if (!executed) {
@@ -32,22 +32,22 @@ var sendHoles = (function() {
 
 var timer = null;
 var gameStarted = false;
-var startTimer = function(toExecute) {
-        if (!toExecute) {
-            gameStarted = true;
-            
-            //fonction anonyme pour pouvoir utiliser setInterval avec une fonction possèdant des paramètres
-            timer = setInterval(function(){noticeGameStartingSoon()}, 1000);
-        }
+var startTimer = function (toExecute) {
+    if (!toExecute) {
+        gameStarted = true;
+
+        //fonction anonyme pour pouvoir utiliser setInterval avec une fonction possèdant des paramètres
+        timer = setInterval(function () { noticeGameStartingSoon() }, 1000);
+    }
 };
 
 var timeLeft = 11;
-var noticeGameStartingSoon = function(){
+var noticeGameStartingSoon = function () {
     timeLeft--;
     console.log("time before the launch of the game : " + timeLeft);
-    if(timeLeft != 0)
+    if (timeLeft != 0)
         io.sockets.emit('gameReadyToStart', timeLeft);
-    else{
+    else {
         console.log("commencement des parties");
         io.sockets.emit('startTheGame');
         console.log("signal envoyé");
@@ -63,7 +63,7 @@ io.sockets.on('connection', function (socket) {
         inGame: false,
         bird: { x: null, y: null },
         isAlive: false,
-        score : 0
+        score: 0
     };
     clients.set(client.id, client);
 
@@ -72,50 +72,50 @@ io.sockets.on('connection', function (socket) {
         console.log("un joueur a rejoint le jeu")
         io.sockets.emit('updateNbPlayer', nbPlayer);
         //voir comportement si rejoint pendant jeu en cours
-        if(nbPlayer > 1 && !gameStarted)
+        if (nbPlayer > 1 && !gameStarted)
             startTimer(gameStarted);//l'état de gameStarted détermine si le timer doit être lancé ou non
-        
+
 
     });
 
-    socket.on('updateScore', function(score){
-        console.log("updating score : "+socket.id+ "  " +score);
+    socket.on('updateScore', function (score) {
+        console.log("updating score : " + socket.id + "  " + score);
         clients.get(socket.id).score = score;
     });
 
     socket.on('disconnect', function () {
         nbPlayer = io.engine.clientsCount;
         console.log("un joueur s'est déconnecté")
-        
+
         clients.delete(socket.id);
-        
+
         io.sockets.emit('updateNbPlayer', nbPlayer);
         io.sockets.emit('destroyBird', socket.id);
     });
 
     socket.on('jump', function () {
         //corriger position joueur
-        var playerToUpdate =  clients.get(socket.id);
+        var playerToUpdate = clients.get(socket.id);
         socket.broadcast.emit('aPlayerJumped', playerToUpdate);
     });
 
     socket.on('sendBirdPosition', function (birdPosition) {
         var player = clients.get(socket.id);
-        if(player != null)
+        if (player != null)
             player.bird = birdPosition;
 
     });
     socket.on('gameStarted', function () {
         console.log("game started")
         var newPlayer = clients.get(socket.id);
-        if(newPlayer != null){
+        if (newPlayer != null) {
             newPlayer.inGame = true;
             newPlayer.isAlive = true;
         }
         //envoyer seulement le nouveau client
         io.sockets.emit('addBirdPlayer', newPlayer);
         sendHoles();
-        
+
     });
     socket.on('getExistingPlayers', function () {
         //on copie la map pour ne pas modifier l'originale
@@ -137,13 +137,13 @@ io.sockets.on('connection', function (socket) {
     });
 
 
-    var isGameOver = function(){
+    var isGameOver = function () {
         var nbPlayersAlive = 0;
-        clients.forEach(function(client){
-            if(client.isAlive)
+        clients.forEach(function (client) {
+            if (client.isAlive)
                 nbPlayersAlive++;
         });
-        if(nbPlayersAlive < 2){
+        if (nbPlayersAlive < 2) {
             gameStarted = false; //envoyer signal fin de jeu -> tableau des scores
             console.log("partie terminée");
             io.sockets.emit('gameOver', Array.from(clients));

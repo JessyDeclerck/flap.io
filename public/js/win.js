@@ -6,7 +6,7 @@ var winState = {
     leave: function () {
         game.state.start('menu');
     },
-    create : function() {
+    create: function () {
         socket.disconnect();
         var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
         escKey.onDown.add(this.leave, this);
@@ -18,9 +18,9 @@ var winState = {
             { font: "18px Arial", fontWeight: 'bold', fill: "#000000" });
         var posName = 100;
 
-        this.players.forEach(function(player){
-            game.add.text(20, posName, player.id + " : " + player.score, 
-            { font: "14px Arial", fontWeight: 'bold', fill: "#000000" });
+        this.players.forEach(function (player) {
+            game.add.text(20, posName, player.id + " : " + player.score,
+                { font: "14px Arial", fontWeight: 'bold', fill: "#000000" });
             posName += 25;
         });
     }

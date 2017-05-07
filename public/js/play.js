@@ -18,7 +18,7 @@ var playState = {
         game.stage.backgroundColor = '#2DB2FF';
         // Initialisation de la physique du jeu et du sprite
         game.physics.startSystem(Phaser.Physics.ARCADE);
-       // var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
+        // var timer = game.time.events.loop(1500, this.addRowOfPipes, this);
         // Gestion des touches du clavier
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
@@ -41,11 +41,11 @@ var playState = {
         else
             newBird = game.add.sprite(90, 200, 'bird');
 
-        
+
         this.birds.set(player.id, newBird);
         //on verifie si l'oiseau est celui contrôlé par le joueur
         //init physics of bird
-        
+
         game.physics.arcade.enable(newBird);
         newBird.body.gravity.y = 1000;
         if (player.id == this.idPlayer)
@@ -67,10 +67,10 @@ var playState = {
             if (i != hole && i != hole + 1)
                 this.addOnePipe(400, i * 60 + 10);
         // Quand apparition d'une colonne, le score augmente de 1
-        if(this.bird.alive){
+        if (this.bird.alive) {
             socket.emit('updateScore', this.score);
             this.labelScore.text = this.score++;
-           
+
         }
     },
     jump: function () {
@@ -119,7 +119,7 @@ var playState = {
         this.birds.get(player.id).y = player.bird.y;
         this.birds.get(player.id).body.velocity.y = -315;
     },
-    gameOver : function(){
+    gameOver: function () {
         this.gameStarted = false;
         game.state.start('win');
     }
@@ -155,12 +155,12 @@ socket.on('aPlayerJumped', function (player) {
         playState.makePlayerJump(player);
 });
 
-socket.on('newHole', function(hole){
-    if(playState.gameStarted)
+socket.on('newHole', function (hole) {
+    if (playState.gameStarted)
         playState.addRowOfPipes(hole);
 });
 
-socket.on('gameOver', function(players){
+socket.on('gameOver', function (players) {
     winState.setPlayers(players);
     playState.gameOver();
 });

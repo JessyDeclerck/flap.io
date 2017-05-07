@@ -22,18 +22,18 @@ var menuState = {
         socket.emit('newPlayer');
         socket.on('updateNbPlayer', function (nbPlayers) {
             nbJoueursLabel.setText("La partie démarrera lorsqu'il \ny aura assez de joueurs\n\nIl y a " + nbPlayers + " joueur(s) en attente");
-            if(nbPlayers>1)
+            if (nbPlayers > 1)
                 nbJoueursLabel.setText("La partie peut commencer\n\n\nIl y a " + nbPlayers + " joueurs en attente");
             //joueur = joueur + message;
         });
-        socket.on('gameReadyToStart', function(timeLeft){
-            gameReadyToStartLabel.setText("La partie va démarrer dans : "+timeLeft+"",
-             {
-                font: "20px Arial",
-                fill: "#000000"
-             }); 
+        socket.on('gameReadyToStart', function (timeLeft) {
+            gameReadyToStartLabel.setText("La partie va démarrer dans : " + timeLeft + "",
+                {
+                    font: "20px Arial",
+                    fill: "#000000"
+                });
         });
-        socket.on('gameCancelled', function(){
+        socket.on('gameCancelled', function () {
             gameReadyToStartLabel.setText();
         });
 
@@ -45,7 +45,7 @@ var menuState = {
     }
 };
 
-socket.on('startTheGame', function(){
+socket.on('startTheGame', function () {
     console.log("starting game");
     menuState.start();
 });
