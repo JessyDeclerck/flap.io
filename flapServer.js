@@ -3,6 +3,10 @@ var http = require('http');
 var app = express();
 var httpServer = http.createServer(app);
 var controller = require('./routes');
+var bodyParser = require("body-parser"); 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 
 //faire un controller pour les routes et architecture REST
 controller.setPaths(app);
@@ -17,6 +21,10 @@ function generateHole() {
     hole = Math.floor(Math.random() * 5) + 1;
     io.sockets.emit('newHole', hole);
 }
+
+function essai_f (s) {
+    console.log("essai_f" + s);
+};
 
 
 //cette fonction n'est activable qu'une seule fois
@@ -55,6 +63,8 @@ var noticeGameStartingSoon = function () {
         timeLeft = 11;
     }
 };
+
+
 
 
 io.sockets.on('connection', function (socket) {
@@ -163,5 +173,7 @@ io.sockets.on('connection', function (socket) {
     });
 
 });
+
+
 
 httpServer.listen(8095);
