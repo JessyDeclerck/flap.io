@@ -39,16 +39,16 @@ var sendHoles = (function () {
 })();
 
 var timer = null;
-var gameStarted = false;
+var gameStarting = false;
 var startTimer = function (toExecute) {
     if (!toExecute) {
-        gameStarted = true;
+        gameStarting = true;
 
         //fonction anonyme pour pouvoir utiliser setInterval avec une fonction possèdant des paramètres
         timer = setInterval(function () { noticeGameStartingSoon() }, 1000);
     }
 };
-
+var gameStarted = false;
 var timeLeft = 11;
 var noticeGameStartingSoon = function () {
     timeLeft--;
@@ -56,6 +56,7 @@ var noticeGameStartingSoon = function () {
     if (timeLeft != 0)
         io.sockets.emit('gameReadyToStart', timeLeft);
     else {
+        gameStarted = true;
         console.log("commencement des parties");
         io.sockets.emit('startTheGame');
         console.log("signal envoyé");
@@ -73,18 +74,29 @@ io.sockets.on('connection', function (socket) {
         inGame: false,
         bird: { x: null, y: null },
         isAlive: false,
-        score: 0
+        score: 0,
+        pseudo: null,
+        spectator: false
     };
     clients.set(client.id, client);
 
-    socket.on('newPlayer', function () {
+    socket.on('registerPseudo', function (pseudo) {
+        clients.get(socket.id).pseudo = pseudo;
+    });
+
+    socket.on('newPlayer', function (pseudoPlayer) {
         nbPlayer = io.engine.clientsCount;
+        if (pseudoPlayer != null)
+            clients.get(socket.id).pseudo = pseudoPlayer;
         console.log("un joueur a rejoint le jeu")
         io.sockets.emit('updateNbPlayer', nbPlayer);
         //voir comportement si rejoint pendant jeu en cours
-        if (nbPlayer > 1 && !gameStarted)
-            startTimer(gameStarted);//l'état de gameStarted détermine si le timer doit être lancé ou non
-
+        if (nbPlayer > 1 && !gameStarting)
+            startTimer(gameStarting);//l'état de gameStarted détermine si le timer doit être lancé ou non
+        if (gameStarted) {
+            socket.emit('startTheGame');//rejoint en mode spectateur
+            clients.get(socket.id).spectator = true;
+        }
 
     });
 
@@ -118,12 +130,13 @@ io.sockets.on('connection', function (socket) {
     socket.on('gameStarted', function () {
         console.log("game started")
         var newPlayer = clients.get(socket.id);
-        if (newPlayer != null) {
+        if (newPlayer != null && !newPlayer.spectator) {
             newPlayer.inGame = true;
             newPlayer.isAlive = true;
         }
         //envoyer seulement le nouveau client
-        io.sockets.emit('addBirdPlayer', newPlayer);
+        if (!newPlayer.spectator)
+            io.sockets.emit('addBirdPlayer', newPlayer);
         sendHoles();
 
     });
@@ -153,8 +166,9 @@ io.sockets.on('connection', function (socket) {
             if (client.isAlive)
                 nbPlayersAlive++;
         });
-        if (nbPlayersAlive < 2) {
-            gameStarted = false; //envoyer signal fin de jeu -> tableau des scores
+        if (nbPlayersAlive < 1) {
+            gameStarting = false; //envoyer signal fin de jeu -> tableau des scores
+            gameStarted = false;
             console.log("partie terminée");
             io.sockets.emit('gameOver', Array.from(clients));
             clients = new Map();

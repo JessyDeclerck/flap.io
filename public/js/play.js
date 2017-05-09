@@ -32,7 +32,6 @@ var playState = {
         socket.emit('getExistingPlayers');
     },
     addOneBird: function (player) {
-        //on vérifie que le joueur n'est pas déjà dans la map avant d'ajouter
         var birdPlayer = player.bird;
         var newBird;
         //si nouveau joueur, la position de l'oiseau est null
@@ -47,11 +46,16 @@ var playState = {
         //init physics of bird
 
         game.physics.arcade.enable(newBird);
+        newBird.height = newBird.height / 10;
+        newBird.width = newBird.width / 10;
         newBird.body.gravity.y = 1000;
+
         if (player.id == this.idPlayer)
             this.bird = this.birds.get(this.idPlayer);
-        else
-            newBird.alpha = 0.5;
+        else {
+            newBird.tint = getRandomColor();
+            newBird.alpha = 0.2;
+        }
     },
     addOnePipe: function (x, y) {
         this.pipe = game.add.sprite(x, y, 'pipe');
@@ -164,3 +168,12 @@ socket.on('gameOver', function (players) {
     winState.setPlayers(players);
     playState.gameOver();
 });
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '0x';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
