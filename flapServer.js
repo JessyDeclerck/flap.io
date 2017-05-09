@@ -80,7 +80,7 @@ io.sockets.on('connection', function (socket) {
         for (var i =0; i<(joueurs.length); i++){
                 if(joueurs[i].id != socket.id){
                     // envoi de l'objet joueur
-                    socket.emit('autre_joueur_status', joueurs[i]);
+                    io.sockets.emit('autre_joueur_status', joueurs[i]);
                 }
             }
     });
