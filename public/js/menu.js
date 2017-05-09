@@ -1,4 +1,5 @@
 var menuState = {
+    pseudoPlayer: null,
     create: function () {
         socket.connect();
         var backgroundColor = game.stage.backgroundColor = '#FFFFFF';
@@ -19,7 +20,7 @@ var menuState = {
                 font: "20px Arial",
                 fill: "#000000"
             });
-        socket.emit('newPlayer');
+        socket.emit('newPlayer', this.pseudoPlayer);
         socket.on('updateNbPlayer', function (nbPlayers) {
             nbJoueursLabel.setText("La partie démarrera lorsqu'il \ny aura assez de joueurs\n\nIl y a " + nbPlayers + " joueur(s) en attente");
             if (nbPlayers > 1)

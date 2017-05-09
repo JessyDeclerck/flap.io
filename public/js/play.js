@@ -32,7 +32,6 @@ var playState = {
         socket.emit('getExistingPlayers');
     },
     addOneBird: function (player) {
-        //on vérifie que le joueur n'est pas déjà dans la map avant d'ajouter
         var birdPlayer = player.bird;
         var newBird;
         //si nouveau joueur, la position de l'oiseau est null

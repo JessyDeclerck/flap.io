@@ -1,4 +1,8 @@
+while (pseudo == null)
+    var pseudo = prompt('Saisissez un pseudo :');
+
 socket = io.connect(ip());
+socket.emit('registerPseudo', pseudo);
 var loadState = {
 
     preload: function () {
@@ -32,3 +36,4 @@ function ip() {
         return ip = temp.substring(0, temp.indexOf('/'));
     }
 }
+
