@@ -1,2 +1,3 @@
 {"pseudo":"grull","password":"261275"}
 {"pseudo":"toto","password":"tot"}
+{"pseudo":"dark","password":"steph"}
