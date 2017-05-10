@@ -17,17 +17,19 @@ module.exports = {
     },
     destroyPlayer: function (p) {
         console.log("un joueur s'est déconnecté")
+        players.delete(p.id);
         io.sockets.emit('updateNbPlayer', getNbPlayers());
         io.sockets.emit('destroyBird', p.id);
-        players.delete(p.id);
     },
     addPlayerToTheGame: function (p) {
+        console.log("add player to the game");
         if (!p.spectator) {
             p.inGame = true;
             p.isAlive = true;
         }
     },
     sendExistingPlayers: function (socket, p) {
+        console.log("send existing players");
         players.forEach(function (value, key, map) {
             if (value.inGame && !value.spectator && value.isAlive)
                 socket.emit('addBirdPlayer', value);
@@ -35,11 +37,14 @@ module.exports = {
 
     },
     destroyBird: function (p) {
+        console.log("destroy bird");
         p.isAlive = false;
         io.sockets.emit('destroyBird', p.id);
-        isGameOver();
+        if (gameStarted)
+            isGameOver();
     },
     resetPlayer: function (p) {
+        console.log("reset player");
         p.inGame = false;
         p.isAlive = false;
         p.bird.x = null;
@@ -90,11 +95,11 @@ var isGameOver = function () {
     });
 
     if (nbPlayersAlive < 1) {
+        io.sockets.emit('gameOver', Array.from(players));
         gameStarting = false;
         gameStarted = false;
         clearInterval(holesSender);
         console.log("partie terminée");
-        io.sockets.emit('gameOver', Array.from(players));
         players = new Map();
     }
 };
