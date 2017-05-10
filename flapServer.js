@@ -1,6 +1,8 @@
+var essais = 0;
 var express = require('express');
 var http = require('http');
-var app = express();
+//var app = express();
+var app = module.exports = express();
 var httpServer = http.createServer(app);
 var controller = require('./routes');
 var bodyParser = require("body-parser"); 
@@ -17,15 +19,9 @@ var io = require('socket.io').listen(httpServer);
 var clients = new Map();
 var nbPlayer;
 
-function generateHole() {
-    hole = Math.floor(Math.random() * 5) + 1;
-    io.sockets.emit('newHole', hole);
+function stockage_pseudo(pseudo1){
+    console.log('login ok 1:'+ pseudo1);
 }
-
-function essai_f (s) {
-    console.log("essai_f" + s);
-};
-
 
 //cette fonction n'est activable qu'une seule fois
 var sendHoles = (function () {
@@ -188,6 +184,9 @@ io.sockets.on('connection', function (socket) {
 
 });
 
+function a(){
+    console.log('fonction');
+}
 
 
 httpServer.listen(8095);

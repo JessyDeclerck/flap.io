@@ -164,6 +164,10 @@ socket.on('newHole', function (hole) {
         playState.addRowOfPipes(hole);
 });
 
+socket.on('loginNok', function () {
+    alert('login et/ou mot de passe incorrect\nVeuillez réessayer');
+});
+
 socket.on('gameOver', function (players) {
     winState.setPlayers(players);
     playState.gameOver();
