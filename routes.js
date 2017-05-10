@@ -1,6 +1,7 @@
 module.exports = {
     setPaths: function (app) {
         var fs = require("fs");
+        var compte = 0;
         var lineReader = require('line-reader');
 
         app.get('/', function (req, res) {
@@ -9,9 +10,23 @@ module.exports = {
         });
 
         app.get('/compte', function (req, res) {
-            res.render('compte.ejs');
-            res.end();
+            res.writeHead(302, {
+                    'refresh': '5;URL=/connecter',
+                    'Content-Encoding':'utf-8',
+                    'charset' : 'utf-8',
+                    'Content-Type': 'text/html'});
+            res.write('<p><h2><b>Bienvenue ...</b></h2><p>')
+            if (compte == 1){
+                res.write('<p>Vous vous &ecirc;tes bien authentifi&eacute;<br>Vous allez &ecirc;tre redirig&eacute; vers la page du jeu<p>')
+            } 
+            else{
+                res.write('<p>Votre compte &agrave; bien &eacute;t&eacute; cr&eacute;&eacute;<br>Vous allez être redirig&eacute; vers la page du jeu<p>')
+            }
+            res.end()
+
         });
+
+
 
         app.get('/inscription', function (req, res) {
             res.render('inscription.ejs');
@@ -42,6 +57,7 @@ module.exports = {
                             if (req.body.psw == JSON.parse(line)['password']){
                             console.log(JSON.parse(line)['pseudo']+":"+JSON.parse(line)['password']);
                             test_login = true;
+                            compte = 1;
                             res.statusCode = 302;
                             res.setHeader("Location", "/compte");
                             res.end();
