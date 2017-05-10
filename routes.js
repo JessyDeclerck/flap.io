@@ -5,12 +5,16 @@ module.exports = {
 
         app.get('/', function (req, res) {
             console.log("chargement vue controller");
-            res.render('index.ejs');
-           
+            res.render('index.ejs');  
         });
 
         app.get('/compte', function (req, res) {
             res.render('compte.ejs');
+            res.end();
+        });
+
+        app.get('/inscription', function (req, res) {
+            res.render('inscription.ejs');
             res.end();
         });
         
