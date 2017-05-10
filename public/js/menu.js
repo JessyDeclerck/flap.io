@@ -22,7 +22,7 @@ var menuState = {
                 font: "20px Arial",
                 fill: "#000000"
             });
-        socket.emit('newPlayer', this.pseudoPlayer);
+        socket.emit('newPlayer');
         socket.on('updateNbPlayer', function (nbPlayers) {
             nbJoueursLabel.setText("La partie démarrera lorsqu'il \ny aura assez de joueurs\n\nIl y a " + nbPlayers + " joueur(s) en attente");
             if (nbPlayers > 1)
@@ -44,6 +44,7 @@ var menuState = {
 
     },
     start: function () {
+        socket.emit('gameStarted');
         game.state.start('play');
     }
 };

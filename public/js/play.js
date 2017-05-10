@@ -23,12 +23,11 @@ var playState = {
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
         game.input.onDown.add(this.jump, this); // pointer will contain the pointer that activated this event}
-        var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
-        escKey.onDown.add(this.leave, this);
         console.log('gameStarted');
         this.gameStarted = true;
-        socket.emit('gameStarted');
+        
         this.idPlayer = socket.id;
+        //seulement si player spectateur
         socket.emit('getExistingPlayers');
     },
     addOneBird: function (player) {
@@ -39,7 +38,8 @@ var playState = {
             newBird = game.add.sprite(player.bird.x, player.bird.y, 'bird'); //on affiche le joueur à sa position actuelle
         else
             newBird = game.add.sprite(90, 200, 'bird');
-
+        
+        console.log("bird added");
 
         this.birds.set(player.id, newBird);
         //on verifie si l'oiseau est celui contrôlé par le joueur
@@ -48,7 +48,7 @@ var playState = {
         game.physics.arcade.enable(newBird);
         newBird.height = newBird.height / 10;
         newBird.width = newBird.width / 10;
-        newBird.body.gravity.y = 1000;
+        newBird.body.gravity.y = 1;
 
         if (player.id == this.idPlayer)
             this.bird = this.birds.get(this.idPlayer);
@@ -93,28 +93,13 @@ var playState = {
             if (this.bird.alive)
                 socket.emit('sendBirdPosition', birdPosition);
             // Conditions de game over
-            game.physics.arcade.overlap(this.bird, this.pipes, this.destroyMe, null, this);
+            //game.physics.arcade.overlap(this.bird, this.pipes, this.destroyMe, null, this);
             if ((this.bird.y < 0 || this.bird.y > 490) && this.bird.alive)
                 this.destroyMe();
         }
     },
     destroyMe: function () {
         socket.emit('destroyMe');
-    },
-
-    // Fonction retour au menu
-    leave: function () {
-
-        if (this.bird.alive)
-            this.destroyMe(this.score);
-        this.gameStarted = false;
-        socket.emit('returnToMenu');
-        game.state.start('menu');
-    },
-
-    // Fonction restart
-    restartGame: function () {
-        game.state.start('play');
     },
     makePlayerJump: function (player) {
         //correction position joueur
@@ -133,15 +118,6 @@ var playState = {
 socket.on('addBirdPlayer', function (player) {
     if (playState.gameStarted)
         playState.addOneBird(player);
-});
-
-//décaler vers JSON
-socket.on('addExistingPlayers', function (players) {
-    var mapPlayers = new Map(players);
-    mapPlayers.forEach(function (player) {
-        if (player.isAlive)
-            playState.addOneBird(player);
-    });
 });
 
 //décaler vers JSON
