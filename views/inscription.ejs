@@ -2,7 +2,7 @@
 <html>
 <style>
 form {
-    border:0px solid gray;
+    border: 0px solid gray;
 }
 
 input[type=text], input[type=password] {
@@ -34,11 +34,14 @@ button:hover {
     background-color: #f44336;
 }
 
+
+
 .container {
     margin: auto;
     width: 50%;
     border: 1px solid gray;
     padding: 10px;
+    
 }
 
 span.psw {
@@ -58,26 +61,26 @@ span.psw {
 }
 </style>
 <body>
-
     <span style="text-align: center;font-size:200%"><h3>Flap.io by JL et SG</h3></span>
-    <form method="post" action="/connection">
 
-        <div class="container">
-            <span style="text-align: center;font-size:150%"><h2>Login</h2></span>
-            <label><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="uname" required>
+<form method="post" action="/creation">
+  <div class="container">
+    <span style="text-align: center;font-size:150%"><h2>Création compte</h2></span>
+    <label><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="uname" required>
 
-            <label><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" required>
+    <label><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="psw" required>
         
-            <button type="submit">Login</button>
-        </div>
+    <button type="submit">Création compte</button>
+  </div>
 
-        <div class="container" style="background-color:#f1f1f1">
-            <button type="button" class="cancelbtn">Cancel</button>
-        </div>
-        <div class="container" style="background-color:#f1f1f1"> Oups, Pas de compte ????, <a href="/inscription">Inscrivez-vous</a></div>
-    </form>
+  <div class="container" style="background-color:#f1f1f1">
+    <button type="button" class="cancelbtn">Cancel</button>
+  </div>
+   <div class="container" style="background-color:#f1f1f1"><a href="/">Retour acceuil</a></div>
+
+</form>
 
 </body>
 </html>
