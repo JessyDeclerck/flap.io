@@ -3,11 +3,14 @@ module.exports = {
     setPaths: function (app) {
 
         app.get('/', function (req, res) {
-            console.log("chargement vue controller");
-            res.render('index.ejs');  
+            res.render('index.ejs', {loginStatus : null});  
         });
 
-        app.get('/compte', function (req, res) {
+        app.get('/login/:loginStatus?', function (req, res) {
+            res.render('index.ejs',{ loginStatus : req.param('loginStatus') });  
+        });
+
+        app.get('/compte/:id', function (req, res) {
             res.render('compte.ejs');
         });
 
@@ -25,11 +28,12 @@ module.exports = {
         app.post('/connection', function(req, res) {
             var account = {pseudo : req.body.uname, password : req.body.psw};
 
-            var testLogin = accountManager.checkLogin(account);
-            if(testLogin){
-                return res.redirect('/connected');
+            var idAccount = accountManager.checkLogin(account);
+            console.log(idAccount);
+            if(idAccount != null){
+                return res.redirect('/compte/' + idAccount);
             }else
-            return res.redirect('/');
+            return res.redirect('/login/failed');
 
         });
             

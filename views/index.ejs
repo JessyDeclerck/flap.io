@@ -70,7 +70,7 @@ span.psw {
             <label><b>Password</b></label>
             <input type="password" placeholder="Enter Password" name="psw" required>
         
-            <button type="submit">Login</button>
+            <button type="submit">Login</button><span><%if (loginStatus == "failed") { %>Erreur lors de la connexion<% } %></span>
         </div>
 
         <div class="container" style="background-color:#f1f1f1">
