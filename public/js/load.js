@@ -1,8 +1,3 @@
-while (pseudo == null)
-    var pseudo = prompt('Saisissez un pseudo :');
-
-menuEventSender.registerPseudo(pseudo);
-
 var loadState = {
 
     preload: function () {

@@ -4,6 +4,11 @@
         <meta charset="utf-8" />
         <title> Flap.io </title>
         <!-- node fournit socket.io.js -->
+        <% if (pseudo) { %>
+            <script>
+                var pseudo = "<%= pseudo %>";       
+            </script>
+        <% } %>
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
         <script type="text/javascript" src="phaser.min.js"></script>
         <script type="text/javascript" src="js/socketInit.js"></script>
@@ -18,5 +23,6 @@
     </head>
 
     <body>
+        
     </body>  
 </html>  

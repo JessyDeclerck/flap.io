@@ -2,7 +2,8 @@ var menuState = {
     create: function () {
 
         menuEventSender.connect();
-
+        menuEventSender.registerPseudo(pseudo);
+        
         var backgroundColor = game.stage.backgroundColor = '#FFFFFF';
         var backgroundImage = game.add.image(0, 0, 'fond');
         backgroundImage.width = game.width;

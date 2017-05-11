@@ -2,14 +2,14 @@
 var express = require('express');
 var http = require('http');
 var app = express();
-//var session = require('express-session');
+var session = require('express-session');
 var httpServer = http.createServer(app);
 var controller = require('./routes');
 var bodyParser = require("body-parser"); 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//app.use(session({secret: 'test'}));
+app.use(session({secret: 'hbHB6gh77vGVj3nJ3838NHb3838HBH'}));
 //faire un controller pour les routes et architecture REST
 controller.setPaths(app);
 
