@@ -42,8 +42,10 @@ var playState = {
         newBird.width = newBird.width / 10;
         newBird.body.gravity.y = 1000;
 
-        if (player.id == this.idPlayer)
+        if (player.id == this.idPlayer){
             this.bird = this.birds.get(this.idPlayer);
+            this.game.debug.renderPhysicsBody(this.bird.body);
+        }
         else {
             newBird.tint = getRandomColor();
             newBird.alpha = 0.2;
