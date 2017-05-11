@@ -2,8 +2,6 @@ var accountManager = require('./models/accountManager');
 module.exports = {
     setPaths: function (app) {
 
-        var session = require('express-session');
-
         app.get('/', function (req, res) {
             console.log("chargement vue controller");
             res.render('index.ejs');  

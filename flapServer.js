@@ -2,11 +2,11 @@
 var express = require('express');
 var http = require('http');
 var app = express();
-var session = require('express-session');
+//var session = require('express-session');
 var httpServer = http.createServer(app);
 var controller = require('./routes');
 
-app.use(session({test: 'test'}));
+//app.use(session({secret: 'test'}));
 //faire un controller pour les routes et architecture REST
 controller.setPaths(app);
 
