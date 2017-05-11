@@ -1,9 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    </head>
-    <h2>Bienvenue <%= pseudo %></h2>
-    <a href="/jouer">Rejoindre le jeu</a><br>
-    Modifier compte<br>
-    <a href="/logout">Déconnexion</a>
+<style>
+
+.container {
+    margin: auto;
+    width: 50%;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: center;
+    
+}
+.container2 {
+    margin: auto;
+    width: 50%;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: center;
+    
+}
+
+div.container2:hover{
+    background: gray;
+
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+       display: block;
+       float: none;
+    }
+}
+</style>
+<body>
+
+    <span style="text-align: center;font-size:200%"><h3>Flap.io by JL et SG</h3></span>
+        <div class="container">
+            <span style="font-size:150%"><h2>Bienvenue <%= pseudo %></h2></span>
+        </div>
+        <div class="container2">
+            <span style="text-align: center;font-size:150%"><a href="/jouer">Rejoindre le jeu</a><br></span>
+        </div>
+        <div class="container2">
+            <span style="text-align: center;font-size:150%"><a href="/logout">Déconnexion</a></span>
+</body>
 </html>

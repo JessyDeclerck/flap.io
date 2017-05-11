@@ -2,3 +2,4 @@
 {"id": 1,"pseudo":"test","password":"test"}
 {"pseudo":"idtest","password":"idtest","id":2}
 {"pseudo":"newIdTest","password":"newIdTest","id":3}
+{"pseudo":"dark","password":"steph","id":4}
