@@ -72,6 +72,7 @@ span.psw {
 <script>
         function eraseText() {
         document.getElementById("uname").value = "";
+        document.getElementById("psw").value = "";
         }
     </script>
 <body>
@@ -84,7 +85,7 @@ span.psw {
     <input type="text" placeholder="Enter Username" name="uname" id="uname" required>
 
     <label><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required>
+    <input type="password" placeholder="Enter Password" name="psw" id = "psw" required>
 </div>
         <div class="container2" style="background-color:#f1f1f1">
     <button type="submit">Création compte</button>
@@ -93,7 +94,7 @@ span.psw {
   <div class="container2" style="background-color:#f1f1f1">
     <button type="button" class="cancelbtn" onclick="javascript:eraseText();">Reset</button>
   </div>
-   <div class="container2" style="background-color:#f1f1f1"><a href="/">Retour acceuil</a></div>
+   <div class="container2" style="background-color:#f1f1f1"><a href="/">Retour accueil</a></div>
 
 </form>
 
