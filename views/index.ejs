@@ -66,6 +66,14 @@ span.psw {
     }
 }
 </style>
+<head>
+    <script>
+        function eraseText() {
+        document.getElementById("uname").value = "";
+        }
+    </script>
+}
+</head>
 <body>
 
     <span style="text-align: center;font-size:200%"><h3>Flap.io by JD et SG</h3></span>
@@ -74,7 +82,7 @@ span.psw {
         <div class="container">
             <span style="text-align: center;font-size:150%"><h2>Login</h2></span>
             <label><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="uname" required>
+            <input type="text" placeholder="Enter Username" name="uname" id = "uname" required>
 
             <label><b>Password</b></label>
             <input type="password" placeholder="Enter Password" name="psw" required>
@@ -84,7 +92,7 @@ span.psw {
         </div>
 
         <div class="container2" style="background-color:#f1f1f1">
-            <button type="button" class="cancelbtn">Reset</button>
+            <button type="button" class="cancelbtn"  onclick="javascript:eraseText();">Reset</button>
         </div>
         <div class="container2" style="background-color:#f1f1f1"> Oups, Pas de compte ????, <a href="/inscription">Inscrivez-vous</a></div>
     </form>
