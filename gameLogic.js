@@ -29,7 +29,7 @@ module.exports = {
 
             socket.on('sendBirdPosition', function (birdPosition) { player.bird = birdPosition; });
 
-            socket.on('gameStarted', function () { ev.addPlayerToTheGame(player) });
+            //socket.on('readyToPlay', function () { ev.addPlayerToTheGame(player) });
 
             socket.on('getExistingPlayers', function () { ev.sendExistingPlayers(socket, player); });
 

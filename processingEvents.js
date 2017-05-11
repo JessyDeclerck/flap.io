@@ -13,20 +13,14 @@ module.exports = {
             console.log("le joueur a rejoint le jeu en tant que spectateur");
             socket.emit('startTheGame');
             p.spectator = true;
-        }
+        }else
+        addPlayerToTheGame(p);
     },
     destroyPlayer: function (p) {
         console.log("un joueur s'est déconnecté")
         players.delete(p.id);
         io.sockets.emit('updateNbPlayer', getNbPlayers());
         io.sockets.emit('destroyBird', p.id);
-    },
-    addPlayerToTheGame: function (p) {
-        console.log("add player to the game");
-        if (!p.spectator) {
-            p.inGame = true;
-            p.isAlive = true;
-        }
     },
     sendExistingPlayers: function (socket, p) {
         console.log("send existing players");
@@ -58,6 +52,14 @@ var holesSender = null;
 var timeLeft = null;
 var gameStarted = false;
 var gameStarting = false;
+
+var addPlayerToTheGame = function (p) {
+    console.log("add player to the game");
+    if (!p.spectator) {
+        p.inGame = true;
+        p.isAlive = true;
+    }
+};
 
 var generateHole = function () {
     var hole = Math.floor(Math.random() * 5) + 1;

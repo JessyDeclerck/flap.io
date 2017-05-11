@@ -1,7 +1,6 @@
 var winState = {
     players: null,
     setPlayers: function (players) {
-        console.log(players);
         //on trie la liste selon les scores
         this.players = new Map(players.sort(function (p1, p2) {
             //players est un tableau de tableau pour pouvoir transmettre le contenu d'une map
@@ -22,8 +21,11 @@ var winState = {
         backgroundImage.height = game.height;
 
         var nameLabel = game.add.text(20, 20, 'Flap.io', { font: "30px Cooper Black", fill: "#000000" });
-        var infoLabel = game.add.text(20, 450, 'ESC : retour menu', { font: "18px Arial", fontWeight: 'bold', fill: "#000000" });
+        var infoLabel = game.add.text(20, 450, 'Appuyez ici pour rejouer', { font: "18px Arial", fontWeight: 'bold', fill: "#000000" });
         var posName = 100;
+
+        infoLabel.inputEnabled = true;
+        infoLabel.events.onInputDown.add(this.leave, this);
 
         this.players.forEach(function (player) {
             if (!player.spectator) {

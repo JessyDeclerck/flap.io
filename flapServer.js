@@ -9,7 +9,7 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(session({secret: 'hbHB6gh77vGVj3nJ3838NHb3838HBH'}));
+app.use(session({secret: 'hbHB6gh77vGVj3nJ3838NHb3838HBH', resave: true, saveUninitialized: true}));
 //faire un controller pour les routes et architecture REST
 controller.setPaths(app);
 

@@ -19,7 +19,7 @@ var menuState = {
         processMenuEvent.startTheGame();
     },
     start: function () {
-        menuEventSender.gameStarted();
+        //menuEventSender.gameStarted();
         game.state.start('play');
     }
 };
