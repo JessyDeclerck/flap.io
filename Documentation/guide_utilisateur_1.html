@@ -15,7 +15,7 @@
     <li style="color:blue;font-size:120%">Installation</li>
     <br>
     <ul>
-        <li> Télecharger le fichier archive flap.io <a href="https://nodejs.org/en/download/" target="_blank">flap.io</a> </li>
+        <li> Télecharger le fichier archive flap.io.zip sur Github <a href="https://github.com/JessyDeclerck/flap.io" target="_blank">flap.io</a> </li>
         <li> Dézipper le fichier archive flap.io sur votre disque dur.</li>
         <li> L'arborescence des répertoire sera alors :<li>
         <ul>
@@ -28,6 +28,8 @@
                 <li>+view</li>
             </ul>
         </ul>
+        <li>Le serveur est configuré sur le port 8095, si le port sur votre machine est déja utilisé, vous avez la possibilité de changer cette valeur dans le fichier<br>
+        flapServer.js à la ligne 22 -> httpServer.listen(8095); Changer 8095 par le port désiré.
         <li> Pour lancer le serveur, à l'aide de la console, se placer dans le répertoire flap.io<br>
         et tapper la commande "node flapServer.js".</li>
         <li>Une fois le serveur lancé :</li>
@@ -59,6 +61,8 @@
                     Le controle du bird se fait avec la touche espace. une pression fera monter le bird.<br></li>
                 <li>La partie est terminée dès que vous touchez un mur ou sortez de l'écran par le haut ou par le bas.<br>
                     Une fois sur l'écran de fin, il faudra attendre que les autres joueurs perdent pour recommencer la partie.</li>
+                <li>Une fois que tous les joueurs on perdu, l'affichage des scores sera réalisé et il faudra cliquez sur le lien "Retour accueil"<br>
+                pour recommencer une partie.
             </ul>
         </ul>
 </ul>
