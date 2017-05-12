@@ -1,6 +1,11 @@
+/**
+ * Objet JSON représentant l'état 'load'
+ */
 var menuState = {
+    /**
+     * créé les différents éléments du menu
+     */
     create: function () {
-
         menuEventSender.connect();
         menuEventSender.registerPseudo(pseudo);
         
@@ -18,8 +23,10 @@ var menuState = {
         processMenuEvent.gameReadyToStart(gameReadyToStartLabel);
         processMenuEvent.startTheGame();
     },
+    /**
+     * Démarre l'état 'play'
+     */
     start: function () {
-        //menuEventSender.gameStarted();
         game.state.start('play');
     }
 };

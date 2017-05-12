@@ -1,5 +1,11 @@
+/**
+ * Objet JSON représentant l'état 'load'
+ */
 var loadState = {
-
+    /**
+     * Fonction appelée avant create
+     * permet de charger les ressources nécessaires
+     */
     preload: function () {
         var assets = "assets/";
         game.load.image('bird', assets + 'bird.png');
@@ -9,7 +15,9 @@ var loadState = {
 
         var loadingLabel = game.add.text("loading...");
     },
-
+    /**
+     * Démarre l'état 'menu'
+     */
     create: function () {
         game.state.start('menu');
     }

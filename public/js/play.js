@@ -1,11 +1,18 @@
+/**
+ * Objet JSON représentant l'état 'play'
+ * Il permet de définir et d'intéragir avec la partie en cours
+ */
 var playState = {
-    idPlayer: null,
-    bird: null,
-    pipes: null,
-    birds: null,
-    score: 0,
+    idPlayer: null, //id du joueur utilisant le client
+    bird: null, //personnage du joueur
+    pipes: null, //obstacles
+    birds: null, //ensemble des personnages
+    score: 0, //score du joueur
     labelScore: null,
-    gameStarted: false,
+    gameStarted: false, //état de la partie (en cours ou non)
+    /**
+     * Initialisations des variables de l'objet
+     */
     preload: function () {
         this.pipes = game.add.group();
         this.birds = new Map();
@@ -14,19 +21,23 @@ var playState = {
         this.score = 0;
         this.labelScore = game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
         game.stage.backgroundColor = '#2DB2FF';
-        // Initialisation de la physique du jeu et du sprite
+        // Initialisation de la physique du jeu
         game.physics.startSystem(Phaser.Physics.ARCADE);
         // Gestion des touches du clavier et souris
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
         game.input.onDown.add(this.jump, this);
+        //Initialisation de variables de l'objet
         this.gameStarted = true;
         this.idPlayer = socket.id;
-        //seulement si player spectateur
+
         playEventSender.getExistingPlayers();
     },
+    /**
+     * Ajoute un personnage au jeu
+     * @param player joueur à qui ajouter un personnage
+     */
     addOneBird: function (player) {
-        //factoriser cette fonction
         var birdPlayer = player.bird;
         var newBird;
         //si nouveau joueur, la position de l'oiseau est null
@@ -41,16 +52,21 @@ var playState = {
         newBird.height = newBird.height / 10;
         newBird.width = newBird.width / 10;
         newBird.body.gravity.y = 1000;
-
-        if (player.id == this.idPlayer){
+        //on vérifie si le personnage ajouté est celui contrôlé par le client
+        if (player.id == this.idPlayer) {
             this.bird = this.birds.get(this.idPlayer);
             this.game.debug.renderPhysicsBody(this.bird.body);
         }
-        else {
+        else { //on ajoute une transparence et une teinte aléatoire aux personnages non contrôlés
             newBird.tint = getRandomColor();
             newBird.alpha = 0.2;
         }
     },
+    /**
+     * Ajoute un bloc au jeu
+     * @param x abcisse du bloc
+     * @param y ordonnée du bloc
+     */
     addOnePipe: function (x, y) {
         this.pipe = game.add.sprite(x, y, 'pipe');
         this.pipes.add(this.pipe);
@@ -59,7 +75,9 @@ var playState = {
         this.pipe.checkWorldBounds = true;
         this.pipe.outOfBoundsKill = true;
     },
-    // Fonction fabrication des obstacles verticaux
+    /**
+     * Ajoute une série de blocs au jeu
+     */
     addRowOfPipes: function (hole) {
         for (var i = 0; i < 8; i++)
             if (i != hole && i != hole + 1)
