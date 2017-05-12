@@ -1,5 +1,10 @@
+//Connexion au serveur
 var socket = io.connect(ip());
 
+/**
+ * Récupére l'adresse du serveur via l'url de la page
+ *@return adresse du serveur au format string
+ * */
 function ip() {
     var CheminComplet = document.location.href;
     var ip;

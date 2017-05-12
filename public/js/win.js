@@ -1,12 +1,23 @@
+/**
+ * Objet JSON représentant l'état 'win'
+ */
 var winState = {
+    //map des joueurs
     players: null,
+    /**
+     * Initialise et trie la map des joueurs selon leur score
+     * @param players map des joueurs
+     */
     setPlayers: function (players) {
         //on trie la liste selon les scores
         this.players = new Map(players.sort(function (p1, p2) {
-            //players est un tableau de tableau pour pouvoir transmettre le contenu d'une map
+            //players est un tableau de tableau pour pouvoir transmettre le contenu d'une map en JSON
             return p2[1].score - p1[1].score;
         }));
     },
+    /**
+     * Passe le jeu à l'état 'menu'
+     */
     leave: function () {
         game.state.start('menu');
     },
@@ -34,7 +45,7 @@ var winState = {
                 posName += 25;
             }
         });
-
+        //on se déconnecte du jeu
         socket.disconnect();
     }
 };

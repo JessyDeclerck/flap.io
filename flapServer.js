@@ -1,22 +1,24 @@
-//variables server
+//dépendances
 var express = require('express');
 var http = require('http');
-var app = express();
-var session = require('express-session');
-var httpServer = http.createServer(app);
-var controller = require('./routes');
 var bodyParser = require("body-parser"); 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+var session = require('express-session');
 
-app.use(session({secret: 'hbHB6gh77vGVj3nJ3838NHb3838HBH', resave: true, saveUninitialized: true}));
-//faire un controller pour les routes et architecture REST
-controller.setPaths(app);
-
-app.use(express.static('public'));
-
+var controller = require('./routes');
 var game = require('./gameLogic');
 
+//configuration serveur
+var httpServer = http.createServer(app);
+var app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(session({secret: 'hbHB6gh77vGVj3nJ3838NHb3838HBH', resave: true, saveUninitialized: true}));
+app.use(express.static('public'));
+
+//ajout des routes
+controller.setPaths(app);
+//lancement du jeu
 game.run(httpServer);
 
+//écoute d'un port
 httpServer.listen(8095);

@@ -10,8 +10,9 @@ module.exports = {
         });
 
         app.get('/login/:loginStatus?', function (req, res) {
-            checkIfConnected(req.session, res);
-            res.render('index.ejs', { loginStatus: req.param('loginStatus') });
+            checkIfConnected(req.session, res, function(){
+                res.render('index.ejs', { loginStatus: req.param('loginStatus') });
+            });
         });
 
         app.get('/compte/:id', function (req, res) {

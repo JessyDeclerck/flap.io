@@ -88,6 +88,9 @@ var playState = {
             this.labelScore.text = this.score++;
         }
     },
+    /**
+     * Fait sauter le personnage contrôlé par le joueur
+     */
     jump: function () {
         // Puissance de la vélocité
         if (this.bird != null && this.bird.alive) {
@@ -95,17 +98,27 @@ var playState = {
             playEventSender.jump();
         }
     },
+    /**
+     * Boucle de mise à jour du jeu (appelée 60 fois/seconde)
+     */
     update: function () {
         if (this.bird != null) {
             //envoi des informations concernant le personnage du joueur au server
             playEventSender.sendBirdPosition(this.bird);
             // Conditions de game over
-            game.physics.arcade.overlap(this.bird, this.pipes, this.destroyMe, null, this);
+            game.physics.arcade.overlap(this.bird, this.pipes, this.destroyMe, null, this);//colision avec les obstacles
             if ((this.bird.y < 0 || this.bird.y > 490) && this.bird.alive)
                 this.destroyMe();
         }
     },
+    /**
+     * Indique au serveur que le joueur a perdu
+     */
     destroyMe: function () { playEventSender.destroyMe() },
+    /**
+     * Fait sauter un personnage
+     * @param player joueur dont le personnage doit sauter
+     */
     makePlayerJump: function (player) {
         //correction position joueur
         var birdToUpdate = this.birds.get(player.id);
@@ -113,6 +126,10 @@ var playState = {
         birdToUpdate.y = player.bird.y;
         birdToUpdate.body.velocity.y = -315;
     },
+    /**
+     * Termine le jeu et passe à l'écran des scores
+     * @param players liste des joueurs à afficher sur l'écran des scores
+     */
     gameOver: function (players) {
         this.gameStarted = false;
         winState.setPlayers(players);
@@ -127,6 +144,10 @@ processPlayEvent.newHole();
 processPlayEvent.destroyBird();
 processPlayEvent.gameOver();
 
+/**
+ * génére le code héxadécimal d'une couleur aléatoire
+ * @return code hexadécimal
+ */
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '0x';
