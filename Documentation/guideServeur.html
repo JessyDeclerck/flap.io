@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<title>Documentation FLAP.io</title>
+
+<xmp theme="united" style="display:none;">
+# FLAP.io
+
+### Guide application serveur
+
+Afin de présenter l'application, ce guide présentera l'arborescence du projet ainsi que le rôle de chaque fichier le composant. 
+
+Pour obtenir une information particulière concernant une fonction ou un module, veuillez consulter le code source des fichiers cités, ces derniers sont commentés de manière détaillée.
+
+Ce guide explicitera également les grands principes de fonctionnement de l'application.
+
+## Arborescence du projet
+
+* [comptes.txt](#comptes)
+* [flapServer.js](#flapserver)
+* [gameLogic.js](#gamelogic)
+* [processingEvents.js](#processingevents)
+* [routes.js](#routes)
+* [models](#models)
+    * accountManager.js
+* [views](#views)
+    * compte.ejs
+    * index.ejs
+    * inscription.ejs
+    * jeu.ejs
+* public
+    * ... [voir guide côté client](./guideClient.html)
+* [node_modules](#nodemodules)
+
+## Les principes de l'application
+* node
+* express
+* modèle MVC
+* Les websockets
+* Les interactions client serveur
+
+ajouter schémas
+
+## Conseils divers
+parler de la sécurité, décaler côté serveur, revoir systeme de gestion de compte
+revoir architecture de l'application, réécrire en typescript....
+
+### <a name= "comptes">comptes.txt</a>
+
+Ce fichier contient les informations de compte des joueurs. Il faut faire attention car ce système de gestion de compte
+est très rudimentaire. Les comptes y sont stockés au format JSON et toutes les informations du compte y sont en clair.
+
+Une ligne correspond à un compte, la structure d'un compte est la suivante { id : 0, pseudo :'guide', password : 'guide'}
+### <a name= "flapserver">flapServer.js</a>
+Ce fichier est destiné au lancement de l'application côté serveur.
+
+Les différentes dépendances de l'application y sont chargées et les paramètres de l'application y sont définies. 
+
+Les librairies utilisées sont les suivantes (cliquer dessus redirige vers leur documentation) :
+
+* [express](https://www.npmjs.com/package/express)
+* [express-session](https://www.npmjs.com/package/express-session)
+* [http](https://nodejs.org/api/http.html)
+* [body-parser](https://www.npmjs.com/package/body-parser)
+
+
+### <a name= "gamelogic">gameLogic.js</a>
+
+Ce fichier est un module destiné à receptionner les messages envoyés par les clients et à rediriger les données vers
+le traitement associé à la manière d'un contrôleur du modèle MVC.
+
+Lien vers fonctionnement plus détaillé
+
+### <a name= "processingevents">processingEvents.js</a>
+
+Ce fichier est le module chargé du traitement des requêtes du clients. Ce module envoie les données traitées
+directement au client.
+
+Lien vers fonctionnement plus détaillé
+
+### <a name= "routes">routes.js</a>
+
+Ce module permet de router les URLs de l'application.
+
+Lien vers modele MVC
+
+### <a name= "views">views</a>
+
+Cet élément est un dossier contenant les vues de l'application, les données qui y sont présentées sont envoyées depuis le module de routage d'URLs.
+
+Lien vers modele MVC
+
+### <a name= "models">models</a>
+
+Ce dossier est destiné à contenir les différents modules de gestion de données
+
+* accountManager : ce module est destiné à la gestion de la persistance des données concernant les comptes des utilisateurs
+
+### <a name= "nodemodules">node_modules</a>
+
+Ce dossier contient les différents éléments des bibliothèques utilisées par l'application
+
+
+
+<a href="guide_dev_1.html">Retour vers le sommaire des guides</a>
+</xmp>
+<script src="http://strapdownjs.com/v/0.2/strapdown.js"></script>
+</html>
