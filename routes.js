@@ -1,8 +1,18 @@
 var accountManager = require('./models/accountManager');
 var sess;
+/**
+ * Module de routage des URLS
+ */
 module.exports = {
+    /**
+     * Route les URLS vers les vues
+     * @param app application devant router les urls
+     */
     setPaths: function (app) {
-
+        /**
+         * @param req requête reçue
+         * @param res réponse
+         */
         app.get('/', function (req, res) {
             checkIfConnected(req.session, res, function () {
                 res.render('index.ejs', { loginStatus: null });
@@ -10,7 +20,7 @@ module.exports = {
         });
 
         app.get('/login/:loginStatus?', function (req, res) {
-            checkIfConnected(req.session, res, function(){
+            checkIfConnected(req.session, res, function () {
                 res.render('index.ejs', { loginStatus: req.param('loginStatus') });
             });
         });
@@ -48,7 +58,7 @@ module.exports = {
                 var account = { pseudo: req.body.uname, password: req.body.psw };
 
                 var idAccount = accountManager.checkLogin(account);
-                if (idAccount != null) {
+                if (idAccount != null) { //on initialise la session si le compte et le mot de passe correspondent
                     sess = req.session;
                     sess.idAccount = idAccount;
                     sess.pseudo = account.pseudo;
@@ -73,7 +83,12 @@ module.exports = {
 
     }
 }
-
+/**
+ * Redirige vers la page d'accueil s'il n'y a pas de session active
+ * sinon execute une fonction quelconque
+ * @param res reponse
+ * @param toExecute fonction à executer
+ */
 var checkSession = function (res, toExecute) {
     if (!sess.pseudo)
         return res.redirect('/');
@@ -81,6 +96,12 @@ var checkSession = function (res, toExecute) {
         toExecute();
 };
 
+/**
+ * Empêche d'accéder à certaines pages lorsque l'on est connecté sinon execute une fonction quelconque
+ * @param reqSession session de la requête
+ * @param res reponse
+ * @param toExecute fonction à executer
+ */
 var checkIfConnected = function (reqSession, res, toExecute) {
     if (reqSession.pseudo)
         return res.redirect('/compte/' + reqSession.idAccount);
