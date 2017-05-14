@@ -8,8 +8,9 @@ var controller = require('./routes');
 var game = require('./gameLogic');
 
 //configuration serveur
-var httpServer = http.createServer(app);
 var app = express();
+var httpServer = http.createServer(app);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(session({secret: 'hbHB6gh77vGVj3nJ3838NHb3838HBH', resave: true, saveUninitialized: true}));
