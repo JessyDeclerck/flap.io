@@ -17,10 +17,25 @@ Ce guide explicitera également les grands principes de fonctionnement de l'appl
 
 Avant toute chose, nous aimerions parler de certains points qui nous semblent important. À l'heure actuelle, l'application n'est pas pérenne et ceci pour plusieurs raisons :
 
+* Le mode de fonctionnement de l'application ne permet actuellement pas de garantir le comportement voulu pour le jeu. En effet, actuellement la logique du jeu est faite côté client,
+cela signifie que les collisions du personnage avec les obstacles ou alors sa sortie de l'écran de jeu sont détectés côté client. Par conséquent, il est très aisé de manipuler son client
+pour tricher. Cela empêche notamment une diffusion à grande échelle de l'application. 
+Pour règler ce problème, il faut que ces éléments soient détectés côté serveur et aussi vérifier la cohérence de toutes les informations envoyées par les clients.
 
+* Le système de gestion de compte est à revoir entièrement, en effet, ce dernier est très rudimentaire. Les mots de passes des utilisateurs sont stockés en clair dans un fichier
+texte, il n'y a aucun contrôle de ce que les utilisateurs saisissent, la casse au niveau des noms de compte est prise en compte, le pseudo des joueurs est également leur nom de compte etc...
+Ce dernier présente donc de nombreux soucis de sécurité, tous les points cités précédemment sont à revoir. Si nous devions implanter un véritable système de gestion de compte, nous privilégierions
+l'utilisation des API d'authentification sécurisés de Google ou Facebook.
 
-parler de la sécurité, décaler côté serveur, revoir systeme de gestion de compte
-revoir architecture de l'application, réécrire en typescript... pouvoir générer doc plus facilement
+* La qualité du code actuel a également un lourd impact sur la pérennité de l'application. En effet, ne maîtrisant pas JavaScript nous avons seulement fait en sorte que l'application soit fonctionnelle.
+JavaScript est rapide à prendre en main mais est difficile à maîtriser. Pour des applications qui commencent à avoir une certaine envergure, il est nécessaire de le maîtriser afin de construire un code propre
+et maintenable. Nous avons toutefois tenté de diviser l'application en différents modules afin d'établir une certaine indépendance des traitements.<br>
+Si nous devions continuer le développement de l'application, nous la réécririons en TypeScript. Ce sur-ensemble de JavaScript permet notamment d'introduire facilement un typage fort au sein de JavaScript ainsi que
+les principaux concepts des langages orientés objets tels que les interfaces ou les classes. Cela nous permettrait notamment de mettre en place facilement des designs patterns que nous n'avons pas
+eu le temps de mettre en oeuvre tels que factory, singleton ou null object. De plus, la syntaxe de TypeScript apporterait une meilleure lisibilité du code.<br>
+D'autrepart, il est difficile pour les outils de génération de documentation d'être efficace pour les codes en JavaScript. En effet, le JavaScript permet de définir des objets ou des fonctions de plusieurs manières,
+il est donc difficile de trouver un outil s'adaptant à tous les codes JavaScript. TypeScript permettrait d'unifier les différentes manières de déclarer les objets ou fonctions de notre programme et nous pourrions
+ainsi générer une documentation facilement à l'aide d'un outil, ce que nous n'avons pas pu faire pour le moment.
 
 ## Arborescence du projet
 
@@ -76,13 +91,9 @@ directement au client.
 
 Ce module permet de router les URLs de l'application.
 
-Lien vers modele MVC
-
 ### <a name= "views">views</a>
 
 Cet élément est un dossier contenant les vues de l'application, les données qui y sont présentées sont envoyées depuis le module de routage d'URLs.
-
-Lien vers modele MVC
 
 ### <a name= "models">models</a>
 
