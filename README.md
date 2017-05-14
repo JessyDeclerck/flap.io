@@ -1,2 +1,1 @@
-# flap.io
-description du projet
+# Consultez le dossier "Documentation"
