@@ -7,11 +7,20 @@
 
 ### Guide application serveur
 
-Afin de présenter l'application, ce guide présentera l'arborescence du projet ainsi que le rôle de chaque fichier le composant. 
+Afin de présenter l'application, ce guide présentera l'arborescence du projet ainsi que le rôle de chaque fichier le composant.
 
 Pour obtenir une information particulière concernant une fonction ou un module, veuillez consulter le code source des fichiers cités, ces derniers sont commentés de manière détaillée.
 
 Ce guide explicitera également les grands principes de fonctionnement de l'application.
+
+## Conseils divers
+
+Avant toute chose, nous aimerions parler de certains points qui nous semblent important. À l'heure actuelle, l'application n'est pas pérenne et ceci pour plusieurs raisons :
+
+
+
+parler de la sécurité, décaler côté serveur, revoir systeme de gestion de compte
+revoir architecture de l'application, réécrire en typescript... pouvoir générer doc plus facilement
 
 ## Arborescence du projet
 
@@ -23,26 +32,12 @@ Ce guide explicitera également les grands principes de fonctionnement de l'appl
 * [models](#models)
     * accountManager.js
 * [views](#views)
-    * compte.ejs
-    * index.ejs
-    * inscription.ejs
-    * jeu.ejs
+    * ... [voir guide côté client](./guideClient.html)
+
 * public
     * ... [voir guide côté client](./guideClient.html)
 * [node_modules](#nodemodules)
 
-## Les principes de l'application
-* node
-* express
-* modèle MVC
-* Les websockets
-* Les interactions client serveur
-
-ajouter schémas
-
-## Conseils divers
-parler de la sécurité, décaler côté serveur, revoir systeme de gestion de compte
-revoir architecture de l'application, réécrire en typescript....
 
 ### <a name= "comptes">comptes.txt</a>
 
@@ -68,14 +63,14 @@ Les librairies utilisées sont les suivantes (cliquer dessus redirige vers leur 
 Ce fichier est un module destiné à receptionner les messages envoyés par les clients et à rediriger les données vers
 le traitement associé à la manière d'un contrôleur du modèle MVC.
 
-Lien vers fonctionnement plus détaillé
+[Voir l'exemple d'intéraction](#interaction)
 
 ### <a name= "processingevents">processingEvents.js</a>
 
 Ce fichier est le module chargé du traitement des requêtes du clients. Ce module envoie les données traitées
 directement au client.
 
-Lien vers fonctionnement plus détaillé
+[Voir l'exemple d'intéraction](#interaction)
 
 ### <a name= "routes">routes.js</a>
 
@@ -99,7 +94,17 @@ Ce dossier est destiné à contenir les différents modules de gestion de donné
 
 Ce dossier contient les différents éléments des bibliothèques utilisées par l'application
 
+### <a name = "interaction">Exemple d'intéraction</a>
 
+Les intéractions se présentent de la manière suivante :
+
+![example interaction](./images/interaction.png)
+
+Par exemple, lorqu'un joueur rejoint le menu, l'objet "menuEventSender" est utilisé afin d'envoyer un événement nommé "newPlayer" au serveur. 
+Cet événement est écouté au niveau du module "gameLogic" qui créera un joueur et l'enverra au module responsable du traitement des requêtes "processingEvents" via la fonction
+"joinGame" qu'il fournit. Une fois le traitement associé à cet événement effectué, un événement nommé "updateNbPlayer" est envoyé au client.
+
+L'événement "updateNbPlayer" est écouté par le module "processMenuEvents", cet événement est associé à une fonction qui sera chargée de mettre à jour le label indiquant le nombre de joueurs ayant rejoint le jeu.
 
 <a href="guide_dev_1.html">Retour vers le sommaire des guides</a>
 </xmp>

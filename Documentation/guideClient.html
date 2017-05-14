@@ -12,6 +12,12 @@ L'application côté client est principalement composée de deux éléments :
 * Les vues de l'application
 * Le jeu
 
+Ce guide étant général, afin obtenir une information particulière concernant une fonction ou un module, veuillez consulter le code source des fichiers cités, ces derniers sont commentés de manière détaillée.
+
+## S'approprier le framework Phaser
+
+Le jeu côté client utilise le framework de création de jeu HTML5 Phaser [(Site officiel de Phaser)](https://phaser.io/). Afin de s'approprier le framework nous conseillons de suivre [le tutoriel](http://www.lessmilk.com/tutorial/flappy-bird-phaser-1) sur lequel nous nous sommes basés pour créer la base du jeu et qui permet d'avoir une bonne idée du fonctionnement de ce dernier.
+
 ## Aborescence client
 
 * [views](#views)
@@ -19,7 +25,7 @@ L'application côté client est principalement composée de deux éléments :
     * index.ejs
     * inscription.ejs
     * jeu.ejs
-* public
+* [public](#public)
     * phaser.min.js
     * js
         * events
@@ -35,7 +41,86 @@ L'application côté client est principalement composée de deux éléments :
     * assets
         * ...
     
+### <a name="views">Views</a>
 
+Ce dossier contient les vues de l'application, elles utilisent la technologie Embedded JavaScript. Comme leur nom l'indique, ces fichiers sont seulement destiné
+à l'affichage de l'interface côté client. Cela signifie qu'aucun traitement n'y est effectué. Embedded JavaScript offre des fonctions permettant de mettre les données
+en forme plus facilement. [Site officiel Embedded JavaScript](http://www.embeddedjs.com/)
+
+* compte.ejs
+
+    Page d'accueil d'un utilisateur connecté. La modification de compte n'a pas encore été implantée.
+
+* index.ejs
+
+    Page d'accueil pour les utilisateurs non connectés.
+
+* inscription.ejs
+
+    Page d'inscription
+
+* jeu.ejs
+
+    Page destinée à accueillir le jeu. Elle fait notamment le lien entre tous les fichiers JavaScript nécessaires au fonctionnement du jeu.
+
+### <a name="public">Public</a>
+
+Ce dossier contient toutes les ressources accessibles par les utilisateurs. Il contient principalement les fichiers nécessaires au fonctionnement du jeu côté client.
+
+* phaser.min.js
+
+    Ce fichier permet d'utiliser le framework de création de jeu HTML5 Phaser. [Site officiel de Phaser](https://phaser.io/)
+
+* js
+    * events
+
+        Ce dossier contient les modules JavaScript destiné à la communication avec le serveur. Le nom des fichiers de ce dossier indique l'endroit où ils sont destinés à être utilisé,
+        par exemple, le module menuEvents.js est destiné à être utilisé dans le menu du jeu.
+        Chacun de ces fichiers est composé d'un objet destiné à envoyer des messages au serveur (ex : menuEventSender) et d'un objet destiné à traiter les messages reçus du serveur (ex : processMenuEvent)
+        
+        Voir [guide côté serveur](./guideServeur.html) pour plus d'informations concernant les interactions clients-serveur
+
+        * menuEvents.js
+
+            Module destiné à la communication avec le serveur depuis le menu du jeu
+
+        * playEvents.js
+
+            Module destiné à la communication avec le serveur lorsqu'une partie est en cours
+
+    * socketInit.js
+
+        Fichier destiné à initialiser la connexion avec le serveur
+    
+    Le code du jeu est organisé selon "l'état" dans lequel est le jeu. Chacun des fichiers ci-dessous représente un état du jeu
+
+    * boot.js
+
+        Charge le moteur physique du jeu.
+
+    * load.js
+
+        Charge les ressources nécessaires au jeu.
+
+    * menu.js
+
+        Génère le menu du jeu.
+
+    * play.js
+
+        Gère la logique du jeu.
+
+    * win.js
+
+        Génère l'écran de fin de jeu.
+
+    * game.js
+
+        Initialise les différents états du jeu et démarre l'état "boot".
+
+* assets
+
+    Contient les ressources graphiques utilisées par le jeu.
 
 <a href="guide_dev_1.html">Retour vers le sommaire des guides</a>
 </xmp>
